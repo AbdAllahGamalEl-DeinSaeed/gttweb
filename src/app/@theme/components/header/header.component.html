@@ -1,0 +1,29 @@
+<div class="header-container">
+  <div class="logo-container">
+    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
+      <nb-icon icon="menu-2-outline"></nb-icon>
+    </a>
+    <div class="logo mr-4" style="cursor: pointer" (click)="navigateHome()">
+      <img height="43" src="assets/images/logo.svg" />
+  </div>
+  <!-- <a class="logo" href="#" (click)="navigateHome()">GEET Web Browser</a>-->
+  <!-- <span class="logo" style="margin-top: 4.2%;">GEET Web Browser</span> -->
+  <span class="logo" style="margin-top: 4.2%;">GTT Administartion</span>
+  </div>
+
+</div>
+
+<div class="header-container">
+  <nb-actions size="small">
+
+    <nb-action class="control-item">
+      <nb-search type="rotate-layout"></nb-search>
+    </nb-action>
+    <nb-action class="user-action" *nbIsGranted="['view', 'user']" >
+      <nb-user [nbContextMenu]="userMenu"
+               [name]="user?.name"
+                                  >
+      </nb-user>
+    </nb-action>
+  </nb-actions>
+</div>

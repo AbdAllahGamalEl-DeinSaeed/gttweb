@@ -1,0 +1,191 @@
+<div class="col-md-12 col-lg-12 col-xxxl-4">
+  <nb-card>
+    <nb-card-body >
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="inputFirstName" class="label">Compound Names: </label>
+        </div>
+        <div class="col-sm-5">
+          <nb-select fullWidth [(selected)]="compoundId">
+            <nb-option *ngFor="let compound of compoundsList" [value]="compound.idCompound">{{compound.shortname}}</nb-option>
+          </nb-select>
+        </div>
+        <div class="col-sm-4">
+          <button nbButton status="success"(click)="GetCompound(compoundId)">Get compound details</button>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>
+
+  <div class="col-md-12 col-lg-12 col-xxxl-12">
+    <nb-card *ngIf="compoundDetails">
+      <nb-card-header>Compound Details</nb-card-header>
+      <nb-card-body >
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="label">Platform Name</label>
+              <input type="text" nbInput fullWidth readonly  [(ngModel)]="compoundDetails.platform.name"  >
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="label">Compound Catrgory Name</label>
+              <input type="text" nbInput fullWidth readonly [(ngModel)]="compoundDetails.compoundCategory.name" >
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="label">Short Name</label>
+              <input type="text" nbInput fullWidth readonly [(ngModel)]="compoundDetails.shortname">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="label">Long Name</label>
+              <input type="text" nbInput fullWidth readonly [(ngModel)]="compoundDetails.name">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label class="label">Description</label>
+              <input type="text" nbInput fullWidth readonly [(ngModel)]="compoundDetails.description">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox   onclick="return false;" [(ngModel)]="compoundDetails.redundant" >  <span>Redundant</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox  onclick="return false;" [(ngModel)]="compoundDetails.configuratorUse" >  <span>Configurator Use</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox onclick="return false;"  [(ngModel)]="compoundDetails.remoteIo" >  <span>Remote Io</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox  onclick="return false;" [(ngModel)]="compoundDetails.zone0" >  <span>Zone 0</span></nb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox   onclick="return false;" [(ngModel)]="compoundDetails.zone1" >  <span>Zone 1</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox  onclick="return false;" [(ngModel)]="compoundDetails.zone2" >  <span>Zone 2</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox onclick="return false;"  [(ngModel)]="compoundDetails.zone20" >  <span>Zone 20</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox  onclick="return false;" [(ngModel)]="compoundDetails.zone21" >  <span>Zone 21</span></nb-checkbox>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox   onclick="return false;" [(ngModel)]="compoundDetails.zone22" >  <span>Zone 22</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox  onclick="return false;" [(ngModel)]="compoundDetails.multiprotocol" >  <span>Multiprotocol</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <nb-checkbox onclick="return false;"  [(ngModel)]="compoundDetails.universalIo" >  <span>Universal Io</span></nb-checkbox>
+            </div>
+          </div>
+          <div class="col-md-3">
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div class="row">
+  <div class="col-md-6 col-lg-6 col-xxxl-6">
+    <nb-card *ngIf="compoundDetails">
+      <nb-card-header>Compound Members information:</nb-card-header>
+      <nb-card-body>
+        <table [nbTreeGrid]="dataSource" [nbSort]="dataSource" (sort)="updateSort($event)">
+
+          <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>
+          <tr nbTreeGridRow *nbTreeGridRowDef="let row; columns: allColumns"></tr>
+
+          <ng-container [nbTreeGridColumnDef]="customColumn">
+            <th nbTreeGridHeaderCell [nbSortHeader]="getSortDirection(customColumn)" *nbTreeGridHeaderCellDef>
+              {{customColumn}}
+            </th>
+            <td nbTreeGridCell *nbTreeGridCellDef="let row">
+              {{row.data[customColumn]}}
+            </td>
+          </ng-container>
+
+          <ng-container *ngFor="let column of defaultColumns; let index = index"
+                        [nbTreeGridColumnDef]="column"
+                        [showOn]="getShowOn(index)">
+            <th nbTreeGridHeaderCell [nbSortHeader]="getSortDirection(column)" *nbTreeGridHeaderCellDef>
+              {{column}}
+            </th>
+            <td nbTreeGridCell *nbTreeGridCellDef="let row" >
+              <ngx-fs-icon-compound-list [CategoryChildren]="row"></ngx-fs-icon-compound-list>
+            </td>
+          </ng-container>
+
+        </table>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div class="col-md-6 col-lg-6 col-xxxl-6">
+    <nb-card *ngIf="compoundDetails">
+      <nb-card-header>Products Information</nb-card-header>
+      <nb-card-body>
+
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product Id</th>
+              <th>Name</th>
+              <th>Model Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  *ngFor="let products of productListService.productsList">
+              <td>{{ products.productId }}</td>
+              <td>{{ products.name }}</td>
+              <td>{{ products.modelCode }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>

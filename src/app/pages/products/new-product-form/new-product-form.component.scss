@@ -1,0 +1,32 @@
+nb-card-body {
+  overflow: visible;
+  padding-top: 0;
+
+  > * {
+    margin-top: 1rem;
+  }
+}
+
+.checkbox-style{
+display: block;
+}
+.input-spacing{
+  > * {
+    margin-top: 1rem;
+  }
+}
+.select-style{
+  display: block;
+  width: 15rem;
+  }
+.add-button-style{
+
+  float: right;
+  margin-top:22%;
+  width: 30%;
+  height: 20%;
+}
+::ng-deep nb-layout-column {
+  height: 65vw;
+}
+

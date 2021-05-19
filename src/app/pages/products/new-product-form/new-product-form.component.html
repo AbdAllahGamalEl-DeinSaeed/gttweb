@@ -1,0 +1,92 @@
+<div class="row">
+  <div class="col-lg-6">
+    <nb-card>
+      <nb-card-header>Product information:</nb-card-header>
+      <nb-card-body>
+        <input type="text" nbInput fullWidth placeholder="Model code"  [(ngModel)]="productDetails.modelCode"/>
+        <input type="text" nbInput fullWidth placeholder="Product type"  [(ngModel)]="productDetails.productType"/>
+        <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.lifecycle">Life cycle</nb-checkbox>
+        <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.obsolete">Obsolete</nb-checkbox>
+        <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.useInCompounds">Used in Compounds</nb-checkbox>
+        <input type="text" nbInput fullWidth placeholder="Weight"  [(ngModel)]="productDetails.weight">
+        <nb-select fullWidth placeholder="Platform" [(ngModel)]="productDetails.platform.idPlatform">
+          <nb-option value="1">DCS</nb-option>
+          <nb-option value="2">TRICON</nb-option>
+          <nb-option value="3">TRICON-CX</nb-option>
+          <nb-option value="4">TRIDENT</nb-option>
+          <nb-option value="5">TRI-GP</nb-option>
+          <nb-option value="6">IT</nb-option>
+          <nb-option value="7">DCS [BASF]</nb-option>
+          <nb-option value="8">TRI-COM</nb-option>
+          <nb-option value="9">Modicon</nb-option>
+          <nb-option value="10">DCS [FBM-S]</nb-option>
+          <nb-option value="13">DCS [FBM-C]</nb-option>
+          <nb-option value="16">PES</nb-option>
+          <nb-option value="18">M&I</nb-option>
+          <nb-option value="19">HDCS</nb-option>
+          <nb-option value="20">SCADA</nb-option>
+        </nb-select>
+        <nb-select fullWidth placeholder="Product category" [(ngModel)]="productDetails.productCategory.idCategory">
+          <nb-option value="2317">Licenses</nb-option>
+          <nb-option value="2318">Hardware</nb-option>
+          <nb-option value="2319">Cables</nb-option>
+          <nb-option value="2320">USB Peripherals</nb-option>
+          <nb-option value="2321">Software</nb-option>
+          <nb-option value="2322">Compact Fieldbus Modules</nb-option>
+          <nb-option value="2323">Fieldbus Modules</nb-option>
+          <nb-option value="2324">Termination Assemblies</nb-option>
+          <nb-option value="2329">LCD Monitors</nb-option>
+          <nb-option value="2330">Pressure Transmitters</nb-option>
+          <nb-option value="23231">Flanges</nb-option>
+          <nb-option value="2332">Temperature Transmitters</nb-option>
+          <nb-option value="2333">Cabinets</nb-option>
+        </nb-select>
+        <input type="number" nbInput fullWidth placeholder="Height (millimeter)"  [(ngModel)]="productDetails.heightMm">
+        <input type="number" nbInput fullWidth placeholder="Width (millimeter)"  [(ngModel)]="productDetails.widthMm">
+        <input type="number" nbInput fullWidth placeholder="Power usage (watt)"  [(ngModel)]="productDetails.powerUsageW">
+        <input type="number" nbInput fullWidth placeholder="Heat Generation(watt)"  [(ngModel)]="productDetails.heatGenerationW">
+      </nb-card-body>
+    </nb-card>
+
+  </div>
+
+  <div class="col-lg-6">
+    <nb-card>
+      <nb-card-header>Product MFG information:</nb-card-header>
+      <nb-card-body>
+        <input type="text" nbInput fullWidth placeholder="Market group"  [(ngModel)]="productDetails.productMfgs[0].marketGroup">
+        <input type="text" nbInput fullWidth placeholder="MFG currency"  [(ngModel)]="productDetails.productMfgs[0].mfgCurrency">
+        <input type="text" nbInput fullWidth placeholder="Country of origin"  [(ngModel)]="productDetails.productMfgs[0].countryOfOrigin">
+        <input type="text" nbInput fullWidth placeholder="Delivery code"  [(ngModel)]="productDetails.productMfgs[0].deliveryCode">
+        <input type="number" nbInput fullWidth placeholder="Price sub tab"  [(ngModel)]="productDetails.productMfgs[0].priceSubtab">
+        <input type="number" nbInput fullWidth placeholder="Max Quantity"  [(ngModel)]="productDetails.productMfgs[0].maxQty">
+      </nb-card-body>
+    </nb-card>
+
+    <nb-card>
+      <nb-card-header>Price Options information:</nb-card-header>
+      <nb-card-body>
+        <input type="number" nbInput fullWidth placeholder="Transfer price"  [(ngModel)]="productDetails.productMfgs[0].priceOption.transferPrice">
+        <input type="number" nbInput fullWidth placeholder="List price"  [(ngModel)]="productDetails.productMfgs[0].priceOption.listPrice">
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-6">
+    <nb-card>
+      <nb-card-header>Text Description information:</nb-card-header>
+      <nb-card-body>
+        <input type="text" nbInput fullWidth placeholder="Short name"  [(ngModel)]="productDetails.textDesciption.valueShort">
+        <input type="text" nbInput fullWidth placeholder="Long Name"  [(ngModel)]="productDetails.textDesciption.valueLong">
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div class="col-lg-6">
+    <button nbButton class ="add-button-style" status="success"(click)="AddProduct('right','success')">Add product</button>
+  </div>
+</div>
+
+

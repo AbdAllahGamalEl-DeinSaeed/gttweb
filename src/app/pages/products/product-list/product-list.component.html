@@ -1,0 +1,127 @@
+<div class="row">
+<div class="col-md-12 col-lg-12 col-xxxl-4">
+  <nb-card class="list-card" size="giant">
+    <nb-card-header>Products</nb-card-header>
+   <nb-list>
+      <nb-list-item *ngFor="let Product of productsList" (click)="getProduct(Product.productId)" style="cursor: pointer;">
+        Model code : {{Product.modelCode}} <br> name:  {{Product.name}}
+      <!-- <button (click)="getProduct(Product.productId)"></button>-->
+      </nb-list-item>
+    </nb-list>
+  </nb-card>
+</div>
+
+
+
+
+
+
+<div class="col-md-8 col-lg-8 col-xxxl-8">
+  <nb-card *ngIf="productDetails">
+    <nb-card-header>Product Details</nb-card-header>
+    <nb-card-body >
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="inputFirstName" class="label">Model Code</label>
+            <input type="text" nbInput fullWidth id="inputFirstName"  [(ngModel)]="productDetails.modelCode"  >
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="inputLastName" class="label">Long Name</label>
+            <input type="text" nbInput fullWidth id="inputLastName"  [(ngModel)]="productDetails?.textDesciption.valueLong" >
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="inputEmail" class="label">Description</label>
+            <input type="text" nbInput fullWidth id="inputEmail" [(ngModel)]="productDetails.description" placeholder="Description">
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="inputWebsite" class="label">Platform</label>
+            <input type="text" nbInput fullWidth id="inputWebsite" [(ngModel)]="productDetails.platform.name">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputCatogery" class="label">Product Category</label>
+            <input type="text" nbInput fullWidth id="inputCatogery" [(ngModel)]="productDetails.productCategory.name" placeholder="Description">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputmarketGroup" class="label">Market Group</label>
+            <input type="text" nbInput fullWidth id="inputmarketGroup" [(ngModel)]="productDetails.productMfgs[0].marketGroup">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputCurrency" class="label">Currency</label>
+            <input type="text" nbInput fullWidth id="inputCurrency" [(ngModel)]="productDetails.productMfgs[0].mfgCurrency">
+          </div>
+        </div>
+      </div>
+     <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputOrigin" class="label">Country of Origin</label>
+            <input type="text" nbInput fullWidth id="inputOrigin"  [(ngModel)]="productDetails.productMfgs[0].countryOfOrigin" placeholder="Description">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputDeliveryCode" class="label">Delivery code</label>
+            <input type="text" nbInput fullWidth id="inputDeliveryCode" [(ngModel)]="productDetails.productMfgs[0].deliveryCode">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputECCn" class="label">eccn number</label>
+            <input type="text" nbInput fullWidth id="inputECCn" [(ngModel)]="productDetails.productMfgs[0].eccnNumber">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputListPrice" class="label">List Price</label>
+            <input type="text" nbInput fullWidth id="inputListPrice" *ngIf="productDetails.productMfgs[0].priceOption.listPrice ;else 0.0" [(ngModel)]="productDetails.productMfgs[0].priceOption.listPrice" placeholder="Description">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputTransferPrice" class="label">Transfer price</label>
+            <input type="text" nbInput fullWidth id="inputTransferPrice" *ngIf="productDetails.productMfgs[0].priceOption.transferPrice ;else 0.0" [(ngModel)]="productDetails.productMfgs[0].priceOption.transferPrice">
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label for="inputGrossMargin" class="label">Gross margin</label>
+            <input type="text" nbInput fullWidth id="inputGrossMargin" *ngIf="productDetails.productMfgs[0].priceOption.grossMargin ;else 0.0" [(ngModel)]="productDetails.productMfgs[0].priceOption.grossMargin">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+        <div class="form-group">
+        <nb-checkbox   [(ngModel)]="productDetails.lifecycle" >  <span>Life time</span></nb-checkbox>
+        <nb-checkbox   [(ngModel)]="productDetails.obsolete"> Obselote </nb-checkbox>
+        <nb-checkbox   [(ngModel)]="productDetails.useInCompounds"> Use in compunds </nb-checkbox>
+      </div>
+      </div>
+    </div>
+      <button type="submit" (click)="updateProduct(productDetails)" nbButton>Submit</button>
+    </nb-card-body>
+  </nb-card>
+</div>
+
