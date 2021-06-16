@@ -56,6 +56,11 @@ export class CompoundHierarchyComponent{
   return this.data ;
  }
 
+ AddCompoundPage()
+ {
+   this.router.navigate(['/pages/compounds/new-compound']);
+ }
+
  MapData(res){
    let  mappedData=[];
    res.forEach(element => {
@@ -102,11 +107,6 @@ getShowOn(index: number) {
 GetData(r){
   console.log(r);
 return r
-}
-
-DefineCompoundPage()
-{
-  this.router.navigate(['/pages/compounds/new-compound-form']);
 }
 
 }

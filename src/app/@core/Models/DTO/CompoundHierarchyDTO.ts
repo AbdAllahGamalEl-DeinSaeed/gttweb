@@ -11,9 +11,9 @@ export class Compounds_CompoundHierarchyDTO{
 }
 
 export class CompoundMembers_CompoundHierarchyDTO{
-  IdCompoundMember: number
-  Name: string
-  CompoundMembersChildren?: CompoundMembers_CompoundHierarchyDTO
+  idCompoundMember: number
+  name: string
+  compoundMembersChildren?: CompoundMembers_CompoundHierarchyDTO[]
 }
 
 export class CompoundMemberItems_CompoundHierarchyDTO{
@@ -24,5 +24,5 @@ export class CompoundMemberItems_CompoundHierarchyDTO{
 export class Products_CompoundHierarchyDTO{
   ProductId: number ;
   ModelCode: string;
-  Name: String;
+  Name: string;
 }

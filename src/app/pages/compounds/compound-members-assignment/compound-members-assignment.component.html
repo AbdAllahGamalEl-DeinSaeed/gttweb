@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-md-12 col-lg-12 col-xxxl-12">
+    <nb-card>
+      <nb-card-header>
+        Compound Members information:
+        <button nbButton status="primary" style="float:right;margin-right: 10px;height: 30px; width: 200px;" (click)="AddCompoundMemberWithNoParent()" >Add compound member</button>
+      </nb-card-header>
+      <nb-card-body>
+        <table [nbTreeGrid]="assignCompoundMembersService.dataSource" [nbSort]="assignCompoundMembersService.dataSource" (sort)="assignCompoundMembersService.updateSort($event)">
+
+          <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="assignCompoundMembersService.allColumns"></tr>
+          <tr nbTreeGridRow *nbTreeGridRowDef="let row; columns: assignCompoundMembersService.allColumns"></tr>
+
+          <ng-container [nbTreeGridColumnDef]="assignCompoundMembersService.customColumn">
+            <th nbTreeGridHeaderCell [nbSortHeader]="assignCompoundMembersService.getSortDirection(customColumn)" *nbTreeGridHeaderCellDef>
+              {{assignCompoundMembersService.customColumn}}
+            </th>
+            <td nbTreeGridCell *nbTreeGridCellDef="let row">
+              {{row.data[assignCompoundMembersService.customColumn]}}
+            </td>
+          </ng-container>
+
+          <ng-container *ngFor="let column of assignCompoundMembersService.defaultColumns; let index = index"
+                        [nbTreeGridColumnDef]="column"
+                        [showOn]="assignCompoundMembersService.getShowOn(index)">
+            <th nbTreeGridHeaderCell [nbSortHeader]="assignCompoundMembersService.getSortDirection(column)" *nbTreeGridHeaderCellDef>
+              {{column}}
+            </th>
+            <td nbTreeGridCell *nbTreeGridCellDef="let row" >
+              <ngx-fs-icon-compound-members-assignment [CategoryChildren]="row"></ngx-fs-icon-compound-members-assignment>
+            </td>
+          </ng-container>
+
+        </table>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+
+<div class="row" *ngIf="this.assignCompoundMembersService.compoundMemberAssignmentDTO.productAssignmentInformation.length">
+  <div class="col-md-12 col-lg-12 col-xxxl-12">
+    <nb-card>
+      <nb-card-header>Products Information</nb-card-header>
+      <nb-card-body>
+
+
+      <div class="container"  style="overflow-y: scroll; max-height: 500px;">
+        <table class="table" style="height: 500px;">
+          <thead>
+            <tr>
+              <th>Product Id</th>
+              <th>Name</th>
+              <th>Model Code</th>
+              <th>Is Assigned</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  *ngFor="let products of this.assignCompoundMembersService.compoundMemberAssignmentDTO.productAssignmentInformation">
+              <td>{{ products.ProductId }}</td>
+              <td>{{ products.Name }}</td>
+              <td>{{ products.ModelCode }}</td>
+              <td><nb-checkbox [(ngModel)]="products.IsAssigned" ></nb-checkbox></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </nb-card-body>
+      <nb-card-footer>
+        <button nbButton status="success"(click)="AssignProductsToCompoundMember('right','success')">Save Changes</button>
+      </nb-card-footer>
+    </nb-card>
+  </div>
+</div>

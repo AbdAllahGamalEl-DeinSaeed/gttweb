@@ -1,6 +1,7 @@
 <nb-card>
   <nb-card-header>Compound Categories information:</nb-card-header>
   <nb-card-body>
+    <button nbButton status="primary" style="margin-left: 10px;height: 30px; width: 200px;" class="button" (click)="AddCompoundPage()" >Add new compound</button>
     <table [nbTreeGrid]="dataSource" [nbSort]="dataSource" (sort)="updateSort($event)">
 
       <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>

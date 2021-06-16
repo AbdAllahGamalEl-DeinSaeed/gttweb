@@ -1,0 +1,15 @@
+<nb-card>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-md-12">
+        <label class="label">Name</label>
+        <input type="text" nbInput fullWidth  [(ngModel)]="data.newCompoundMemberName">
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+      <button nbButton status="primary" (click)="AddNewCompoundMember()"> Add compound member</button>
+      &nbsp;
+      <button  nbButton status="danger" (click)="Dismiss()"> Cancel changes</button>
+  </nb-card-footer>
+</nb-card>

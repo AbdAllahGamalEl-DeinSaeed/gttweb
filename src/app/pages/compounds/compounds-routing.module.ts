@@ -3,6 +3,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CompoundsComponent } from './compounds.component';
 import { CompoundListComponent } from './compound-list/compound-list.component'
+import { NewCompoundComponent } from './new-compound/new-compound.component'
+import { UpdateCompoundComponent } from './update-compound/update-compound.component'
+import { CompoundMembersAssignmentComponent } from './compound-members-assignment/compound-members-assignment.component'
 
 const routes: Routes =
 [{
@@ -16,6 +19,18 @@ const routes: Routes =
     {
       path: 'compound-list',
       component: CompoundListComponent
+    },
+    {
+      path: 'new-compound',
+      component: NewCompoundComponent
+    },
+    {
+      path: 'update-compound',
+      component: UpdateCompoundComponent
+    },
+    {
+      path: 'compound-members-assignment',
+      component: CompoundMembersAssignmentComponent
     }
   ],
 }];
@@ -28,5 +43,8 @@ export class CompoundsRoutingModule { }
 export const routedComponents = [
   CompoundsComponent,
   CompoundHierarchyComponent,
-  CompoundListComponent
+  CompoundListComponent,
+  NewCompoundComponent,
+  UpdateCompoundComponent,
+  CompoundMembersAssignmentComponent
 ];

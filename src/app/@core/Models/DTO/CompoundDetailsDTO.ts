@@ -74,8 +74,6 @@ export class CompoundMembersDTO{
   cUser?: number;
   cDatetime: any;
   mUser?: number;
-  datetimestamp?: any;
-  syncid?: any;
   selectionMarker?: boolean;
   redundant?: boolean
   compoundMembersChildren: CompoundMembersDTO[];
