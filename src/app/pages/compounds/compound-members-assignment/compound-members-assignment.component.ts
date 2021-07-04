@@ -257,7 +257,7 @@ export class FsIconCompoundMembersAssignmentComponent {
     {
       this.productsbyCompoundMember.forEach((product) =>
       {
-        this.productIdsByCompoundMember.push(product.ProductId);
+        this.productIdsByCompoundMember.push(product.productId);
       });
     }
     console.log(this.productsByPlatform.length);

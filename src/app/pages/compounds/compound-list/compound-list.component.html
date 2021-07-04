@@ -288,7 +288,7 @@
     </nb-card>
     <nb-card *ngIf="compoundDetails && compoundListService.isCompoundMemberTreeEditable == true">
       <nb-card-header>Compound Members information:
-        <button nbButton style="float:right;margin-right: 10px;height: 30px; width: 250px;" status="primary"(click)="AddCompoundMemberWithNoParent()">Add new compound member</button>
+        <button nbButton style="float:right;margin-right: 10px;height: 30px; width: 250px;" status="primary"(click)="compoundListService.AddCompoundMemberWithoutParent()">Add new compound member</button>
       </nb-card-header>
       <nb-card-body>
         <table [nbTreeGrid]="compoundListService.dataSource" [nbSort]="compoundListService.dataSource" (sort)="compoundListService.updateSort($event)">
@@ -328,16 +328,20 @@
 
 
 
-  <div class="col-md-6 col-lg-6 col-xxxl-6">
-    <nb-card *ngIf="compoundDetails">
-      <nb-card-header>Products Information</nb-card-header>
+  <div class="col-md-12 col-lg-12 col-xxxl-12">
+    <nb-card *ngIf="productListService.isProductAssignmentCalled && !productListService.isProductAssignmentEditable">
+      <nb-card-header>Products Information:
+        <button nbButton status="primary" class="button edit-button" (click)="productListService.EditProductAssignments()" >Update Product Assignment</button>
+      </nb-card-header>
       <nb-card-body>
 
 
-        <table class="table">
+        <table class="table table-bordered table-hover">
           <thead>
             <tr>
               <th>Product Id</th>
+              <th>Product Category </th>
+              <th>Platform</th>
               <th>Name</th>
               <th>Model Code</th>
             </tr>
@@ -345,6 +349,8 @@
           <tbody>
             <tr  *ngFor="let products of productListService.productsList">
               <td>{{ products.productId }}</td>
+              <td>{{ products.productCategoryName }}</td>
+              <td>{{ products.platformName }}</td>
               <td>{{ products.name }}</td>
               <td>{{ products.modelCode }}</td>
             </tr>
@@ -354,4 +360,97 @@
 
       </nb-card-body>
     </nb-card>
+    <nb-card *ngIf="productListService.isProductAssignmentCalled && productListService.isProductAssignmentEditable">
+      <nb-card-header>Products Information:
+      </nb-card-header>
+      <nb-card-body>
+        <div class="col-md-12 col-lg-12 col-xxxl-12">
+          <nb-card>
+            <nb-card-header>
+              Add Product to Compound Member
+            </nb-card-header>
+            <nb-card-body>
+              <div class="row">
+                <div class="col-sm-2" style="margin-top: 5px;">
+                  <label class="label">Compound Member Name:</label>
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" nbInput fullWidth  [(ngModel)]="productListService.compoundMemberName">
+                </div>
+              </div>
+              <br/>
+              <div *ngIf="productListService.compoundMemberName != null" style="overflow-y: scroll; max-height: 500px;">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                      <tr>
+                        <th>Model Code</th>
+                        <th>Platform</th>
+                        <th>Product Category</th>
+                        <th>Name</th>
+                        <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody *ngFor="let product of productListService.productsAssignment">
+                      <tr  *ngIf="product.name.toLowerCase().search(productListService.compoundMemberName.toLowerCase()) != -1 && product.isAssigned == false">
+                        <td>{{ product.modelCode }}</td>
+                        <td>{{ product.platformName }}</td>
+                        <td>{{ product.productCategoryName }}</td>
+                        <td>{{ product.name }}</td>
+                        <td><button nbButton status="primary" class="button" (click)="productListService.AddProduct(product.productId)" >Add Product</button></td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </nb-card-body>
+          </nb-card>
+
+          <nb-card>
+            <nb-card-header>
+              Manage Assigned Products
+
+              <div style="float:right;margin-right: 5px;">
+                <label for="inputFirstName" class="label">Main Product Option: </label>
+                <select class="drop-down-style"  [(ngModel)]="productListService.mainOptionProductId">
+                  <ng-container *ngFor='let product of productListService.productsAssignment' >
+                    <option *ngIf="product.isAssigned == true" [ngValue]="product.productId">
+                      {{product.name}}
+                    </option>
+                  </ng-container>
+                </select>
+              </div>
+            </nb-card-header>
+            <nb-card-body>
+              <div style="overflow-y: scroll; max-height: 500px;">
+                <table class="table table-bordered table-hover">
+                  <thead>
+                      <tr>
+                        <th>Model Code</th>
+                        <th>Platform</th>
+                        <th>Product Category</th>
+                        <th>Name</th>
+                        <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody *ngFor="let product of productListService.productsAssignment">
+                      <tr  *ngIf="product.isAssigned == true">
+                        <td>{{ product.modelCode }}</td>
+                        <td>{{ product.platformName }}</td>
+                        <td>{{ product.productCategoryName }}</td>
+                        <td>{{ product.name }}</td>
+                        <td><button nbButton status="danger" class="button" (click)="productListService.RemoveProduct(product.productId)">Remove Product</button></td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </nb-card-body>
+      <nb-card-footer>
+        <button nbButton style="float:right;margin-right: 10px;height: 30px; width: 200px;" (click)="productListService.SaveProductAssignments('right','success')" status="success">Save Changes</button>
+        <button nbButton style="float:right; margin-right: 10px;height: 30px; width: 200px;" (click)="productListService.CancelProductAssignments()" status="danger">Cancel Changes</button>
+
+      </nb-card-footer>
+  </nb-card>
   </div>
+

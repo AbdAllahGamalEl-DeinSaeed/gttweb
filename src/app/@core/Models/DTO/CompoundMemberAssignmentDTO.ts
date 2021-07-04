@@ -18,23 +18,28 @@ export class ProductAssignmentInformation
 
 export class CompoundMembersTree
 {
+  idCompound : number;
   compoundMemberInsertions: CompoundMemberInsertions[];
-  compoundMemberRemovals : CompoundMemberRemovals[];
+  compoundMemberRemovals : string[];
 
   constructor(){
     this.compoundMemberInsertions = [new  CompoundMemberInsertions()];
-    this.compoundMemberRemovals = [new CompoundMemberRemovals()];
   }
 }
 
 export class CompoundMemberInsertions
 {
-  idCompound : number;
   name: string;
   parentName: string;
 }
 
-export class CompoundMemberRemovals
+export class ProductAssignment
 {
-  name: string;
+  productId: number;
+  modelCode: string;
+  name: String;
+  isAssigned: boolean;
+  productCategoryName: string;
+  platformName: string;
 }
+

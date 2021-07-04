@@ -1,4 +1,4 @@
-import { CompoundMemberInsertions, CompoundMembersTree } from './../../../@core/Models/DTO/CompoundMemberAssignmentDTO';
+import { CompoundMemberInsertions, CompoundMembersTree, ProductAssignment } from './../../../@core/Models/DTO/CompoundMemberAssignmentDTO';
 import { CompoundDetailsDTO } from './../../../@core/Models/DTO/CompoundDetailsDTO';
 import { Compounds_CompoundHierarchyDTO, CompoundMembers_CompoundHierarchyDTO, Products_CompoundHierarchyDTO, CompoundMemberItems_CompoundHierarchyDTO } from './../../../@core/Models/DTO/CompoundHierarchyDTO';
 import { Component, OnInit, Input, Injectable } from '@angular/core';
@@ -8,9 +8,6 @@ import { NbSortDirection, NbSortRequest, NbTreeGridDataSource, NbTreeGridDataSou
 import { Router } from '@angular/router';
 import { MatDialog } from'@angular/material/dialog'
 import {CompoundMemberAdditionModalComponent } from '../compound-member-addition-modal/compound-member-addition-modal.component'
-import { StringifyOptions } from 'querystring';
-import { FsIconCompoundMembersAssignmentComponent } from '../compound-members-assignment/compound-members-assignment.component';
-import { ThisReceiver, ThrowStmt } from '@angular/compiler';
 
 interface TreeNode<T> {
   data: T;
@@ -21,10 +18,90 @@ interface TreeNode<T> {
 @Injectable()
 export class ProductListService {
   productsList : Products_CompoundHierarchyDTO[];
+  isProductAssignmentEditable: boolean;
+  isProductAssignmentCalled: boolean;
+  productsAssignment: ProductAssignment[];
+  compoundMemberId: number;
+  compoundMemberName: string;
+  mainOptionProductId:number;
 
-  AssignProductList(responseList : Products_CompoundHierarchyDTO[])
+  constructor(private route: ActivatedRoute,
+    private httpServices: HTTPService,
+    private toasterService: NbToastrService,
+    private router :Router,)
+    {
+
+    }
+
+  AssignProductList()
   {
-    this.productsList = responseList;
+    const request = 'https://localhost:44375/api/Definitions/getproductsbycompoundmember_compoundhierarchy';
+    this.httpServices.Get(request ,{compoundMemberId: this.compoundMemberId}).subscribe((response: Products_CompoundHierarchyDTO[]) =>
+    {
+      this.productsList = response;
+    });
+  }
+
+  EditProductAssignments(){
+    this.isProductAssignmentEditable = true;
+    this.compoundMemberName = null;
+    this.productsAssignment = [];
+    this.GetAllProducts();
+
+  }
+
+  GetAllProducts()
+  {
+    const request = 'https://localhost:44375/api/Definitions/getallproductsforassignment';
+    this.httpServices.Get(request ,{compoundMemberId: this.compoundMemberId}).subscribe((response: ProductAssignment[]) =>
+    {
+      console.log(response);
+      this.productsAssignment = response;
+    });
+  }
+
+  AddProduct(productId)
+  {
+    var index = this.productsAssignment.findIndex(p => p.productId == productId);
+    this.productsAssignment[index].isAssigned = true;
+    console.log(this.mainOptionProductId)
+  }
+
+  RemoveProduct(productId)
+  {
+    var index = this.productsAssignment.findIndex(p => p.productId == productId);
+    this.productsAssignment[index].isAssigned = false;
+    console.log(this.mainOptionProductId)
+  }
+
+  SaveProductAssignments(position, status)
+  {
+    const productAssignmentApi = this.productsAssignment.filter(p => p.isAssigned == true);
+    const request = 'https://localhost:44375/api/Definitions/assignproductstocompoundmember';
+    this.httpServices.Post(request, {compoundMemberId : this.compoundMemberId, firstAssignedProductId: this.mainOptionProductId} ,productAssignmentApi).subscribe(res =>
+    {
+      console.log(res);
+      this.toasterService.show(
+        status || 'Assignment success',
+        `Products have been to the compound member successfully`,
+        { position, status }
+      );
+      this.productsAssignment = [];
+      this.isProductAssignmentEditable = false;
+      this.isProductAssignmentCalled = false;
+      this.productsList = [];
+
+    })
+
+  }
+
+  CancelProductAssignments()
+  {
+    this.productsAssignment = [];
+    this.isProductAssignmentEditable = false;
+    this.isProductAssignmentCalled = false;
+    this.productsList = [];
+
   }
 }
 
@@ -49,7 +126,10 @@ export class CompoundListService {
 
   constructor(private route: ActivatedRoute,
     private httpServices: HTTPService,
-    private dataSourceBuilder: NbTreeGridDataSourceBuilder<CompoundMembers_CompoundHierarchyDTO>)
+    private dataSourceBuilder: NbTreeGridDataSourceBuilder<CompoundMembers_CompoundHierarchyDTO>,
+    private toasterService: NbToastrService,
+    public dialog: MatDialog
+    )
     {
     }
 
@@ -153,6 +233,105 @@ export class CompoundListService {
   return r
   }
 
+
+  CallEmptyCompoundMemberNamesNotification(position, status){
+    this.toasterService.show(
+      status || 'Compound Member name empty',
+      `Please provide a name for the Compound Member to be added to the tree`,
+      { position, status });
+   }
+
+   CallAlreadyFoundCompoundMemberNameNotification(position, status)
+   {
+    this.toasterService.show(
+      status || 'Compound Member name already found',
+      `The name is already used in tree, please provide a unique name for each Member`,
+      { position, status });
+   }
+
+  AddCompoundMemberWithoutParent()
+  {
+    const dialogRef = this.dialog.open(CompoundMemberAdditionModalComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      debugger;
+     if(result.length == 0|| result == undefined)
+     {
+       this.CallEmptyCompoundMemberNamesNotification('right','danger');
+     }
+
+     else if (this.compoundMemberNames.includes(result))
+     {
+       this.CallAlreadyFoundCompoundMemberNameNotification('right','danger');
+     }
+
+     else
+     {
+      for(var i = 0; i < result.length; i++)
+      {
+        if(result[i] != null && !this.compoundMemberNames.includes(result[i]))
+        {
+          this.compoundMemberNames.push(result[i]);
+          var checkDuplicate = this.RemoveCompoundMemberDuplicates(result[i]);
+          if(!checkDuplicate)
+          {
+           this.compoundMembersTree.compoundMemberInsertions.push(
+             {
+               name: result[i],
+               parentName: null
+             });
+          }
+
+          this.AddNewCompoundMemberNode(result[i]);
+        }
+      }
+     }
+    });
+  }
+
+  AddNewCompoundMemberNode(name : string)
+  {
+   let newCompoundMember = { name:name,idCompoundMember:null,compoundMembersChildren: null};
+   this.compoundMemberListData.push(newCompoundMember);
+   this.PrepareCompoundMembers(this.compoundMemberListData);
+  }
+
+  RemoveCompoundMemberDuplicates(nameCheck: string) : boolean
+  {
+
+    var index = -1;
+    index = this.compoundMembersTree.compoundMemberInsertions.findIndex(x => x.name == nameCheck);
+    if(index != -1)
+    {
+      this.compoundMembersTree.compoundMemberInsertions.splice(index, 1);
+      return true;
+    }
+    else
+    {
+      index = this.compoundMembersTree.compoundMemberRemovals.indexOf(nameCheck);
+      if(index != -1)
+      {
+        this.compoundMembersTree.compoundMemberRemovals.splice(index, 1);
+        return true;
+      }
+      return false;
+    }
+  }
+
+  RestructureCompoundMembersTree(position,status)
+  {
+    this.compoundMembersTree.idCompound = this.compoundId;
+    debugger;
+    const request = "https://localhost:44375/api/Definitions/restructurecompoundmembertree";
+    this.httpServices.Post(request, null, this.compoundMembersTree).subscribe(res =>
+    {
+        this.toasterService.show(
+          status || 'Compound member restructure success',
+          `Compound members tree has been restructured successfully`,
+          { position, status });
+          this.isCompoundMemberTreeEditable = false;
+          this.GetCompoundMembersFromApi(this.compoundId);
+    })
+  }
 }
 
 @Component({
@@ -195,6 +374,8 @@ export class CompoundListComponent implements OnInit {
     this.GetCompoundList(this.categoryid)  ;
     this.compoundId = 320;
     this.isCompoundEditable = false;
+    this.productListService.isProductAssignmentEditable = false;
+    this.productListService.isProductAssignmentCalled = false;
   }
 
   GetCompoundList(id: any )
@@ -255,9 +436,15 @@ export class CompoundListComponent implements OnInit {
     this.compoundListService.InitializeCompoundMemberTree();
   }
 
+  SaveCompoundMembersTreeUpdate(position, status)
+  {
+    this.compoundListService.RestructureCompoundMembersTree(position,status);
+  }
+
   CancelCompoundMembersTreeUpdate()
   {
     this.compoundListService.isCompoundMemberTreeEditable = false;
+    this.compoundListService.GetCompoundMembersFromApi(this.compoundId);
   }
 
 
@@ -304,62 +491,46 @@ export class FsIconCompoundListComponent {
  }
 
  GetProductList(){
-  console.log(this.CategoryChildren.data.idCompoundMember);
-  const request = 'https://localhost:44375/api/Definitions/getproductsbycompoundmember_compoundhierarchy';
-  this.httpServices.Get(request ,{compoundMemberId: this.CategoryChildren.data.idCompoundMember}).subscribe((response: Products_CompoundHierarchyDTO[]) =>
-  {
-    console.log(response);
-    this.productListService.AssignProductList(response);
-    console.log(this.productListService);
-  });
+  this.productListService.compoundMemberId = this.CategoryChildren.data.idCompoundMember;
+  this.productListService.isProductAssignmentCalled = true;
+  this.productListService.AssignProductList();
 }
-
-CallEmptyCompoundMemberNameNotification(position, status){
-  this.toasterService.show(
-    status || 'Compound Member name empty',
-    `Please provide a name for the Compound Member to be added to the tree`,
-    { position, status });
- }
-
- CallAlreadyFoundCompoundMemberNameNotification(position, status)
- {
-  this.toasterService.show(
-    status || 'Compound Member name already found',
-    `The name is already used in tree, please provide a unique name for each Member`,
-    { position, status });
- }
 
  AddCompoundMemberWithParent()
  {
-   const dialogRef = this.dialog.open(CompoundMemberAdditionModalComponent , { data: {newCompoundMemberName : this.compoundListService.newCompoundMemberName } });
+   const dialogRef = this.dialog.open(CompoundMemberAdditionModalComponent);
    dialogRef.afterClosed().subscribe(result => {
-    if(result == null || result == undefined)
+    if(result.length == 0 || result == undefined)
     {
-      this.CallEmptyCompoundMemberNameNotification('right','danger');
-    }
-
-    else if (this.compoundListService.compoundMemberNames.includes(result))
-    {
-      this.CallAlreadyFoundCompoundMemberNameNotification('right','danger');
+      this.compoundListService.CallEmptyCompoundMemberNamesNotification('right','danger');
     }
 
     else
     {
-      this.compoundListService.compoundMemberNames.push(result);
-      this.compoundListService.compoundMembersTree.compoundMemberInsertions.push(
+      for(var i = 0; i < result.length; i++)
+      {
+        if(result[i] != null && !this.compoundListService.compoundMemberNames.includes(result[i]))
         {
-          idCompound : this.compoundListService.compoundId,
-          name: result,
-          parentName: this.CategoryChildren.data.name
-        });
-      console.log(" tree result", this.compoundListService.compoundMembersTree);
-      this.AddCompoundMemberNode(this.CategoryChildren.data.name, result);
+          this.compoundListService.compoundMemberNames.push(result[i]);
+          var checkDuplicate = this.compoundListService.RemoveCompoundMemberDuplicates(result[i]);
+          if(!checkDuplicate)
+          {
+            this.compoundListService.compoundMembersTree.compoundMemberInsertions.push(
+              {
+                name: result[i],
+                parentName: this.CategoryChildren.data.name
+              });
+          }
+          console.log(" tree result", this.compoundListService.compoundMembersTree);
+          this.AddChildCompoundMemberNode(this.CategoryChildren.data.name, result[i]);
+        }
+      }
     }
    });
  }
 
 
- AddCompoundMemberNode(parentName: string, childName: string)
+ AddChildCompoundMemberNode(parentName: string, childName: string)
  {
    let newCompoundMemberChild = { name:childName,idCompoundMember:null,compoundMembersChildren: null};
    let isChildAdded = false;
@@ -424,10 +595,11 @@ CallEmptyCompoundMemberNameNotification(position, status){
  {
   var index = this.compoundListService.compoundMemberNames.indexOf(this.CategoryChildren.data.name);
   this.compoundListService.compoundMemberNames.splice(index, 1);
-  this.compoundListService.compoundMembersTree.compoundMemberRemovals.push(
-    {
-      name: this.CategoryChildren.data.name
-    });
+  var checkDuplicate = this.compoundListService.RemoveCompoundMemberDuplicates(this.CategoryChildren.data.name);
+  if(!checkDuplicate)
+  {
+    this.compoundListService.compoundMembersTree.compoundMemberRemovals.push(this.CategoryChildren.data.name);
+  }
   console.log(" tree result", this.compoundListService.compoundMembersTree);
   this.RemoveCompoundMemberNode(this.CategoryChildren.data.name);
  }
@@ -435,6 +607,7 @@ CallEmptyCompoundMemberNameNotification(position, status){
  RemoveCompoundMemberNode(memberName: string)
  {
   var index;
+  var isChildrenEmpty = false;
    for(var i = 0; i < this.compoundListService.compoundMemberListData.length; i++)
    {
      if(this.compoundListService.compoundMemberListData[i].compoundMembersChildren != null)
@@ -444,19 +617,30 @@ CallEmptyCompoundMemberNameNotification(position, status){
         this.FindChildeNodeForRemoval(
           this.compoundListService.compoundMemberListData[i],
            memberName);
+           isChildrenEmpty = false;
+       }
+       else
+       {
+        isChildrenEmpty = true;
        }
      }
+
      else
      {
-       if(this.compoundListService.compoundMemberListData[i].name == memberName)
-       {
-         if (this.compoundListService.compoundMemberListData[i].compoundMembersChildren == null)
-         {
-           this.compoundListService.compoundMemberListData[i].compoundMembersChildren = [];
-         }
-         index = this.compoundListService.compoundMemberListData.indexOf(this.compoundListService.compoundMemberListData[i]);
-         this.compoundListService.compoundMemberListData.splice(index, 1);
-       }
+      isChildrenEmpty = true;
+     }
+
+     if(isChildrenEmpty == true)
+     {
+      if(this.compoundListService.compoundMemberListData[i].name == memberName)
+      {
+        if (this.compoundListService.compoundMemberListData[i].compoundMembersChildren == null)
+        {
+          this.compoundListService.compoundMemberListData[i].compoundMembersChildren = [];
+        }
+        index = this.compoundListService.compoundMemberListData.indexOf(this.compoundListService.compoundMemberListData[i]);
+        this.compoundListService.compoundMemberListData.splice(index, 1);
+      }
      }
    }
    console.log("removal result", this.compoundListService.compoundMemberListData);

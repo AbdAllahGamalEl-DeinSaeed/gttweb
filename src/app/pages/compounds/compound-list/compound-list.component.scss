@@ -1,0 +1,26 @@
+.edit-button
+{
+  float:right;
+  margin-right: 10px;
+  height: 30px;
+   width: 250px;
+}
+
+.drop-down-style
+{
+  width: 350px;
+  height: 35px;
+  border-radius: 7px;
+  padding: 5px 10px;
+  border: 1px solid;
+  outline: 0px;
+  border-color: #ccc;
+  transition: border-color 1s ease-out;
+}
+
+.drop-down-style :focus
+{
+  border-color: green;
+  outline: 0px;
+  box-shadow: 0 0 0 0.2rem rgba(4, 187, 29, 0.822);
+}

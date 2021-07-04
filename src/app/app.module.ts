@@ -13,6 +13,8 @@ import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 import {
   NbChatModule,
   NbDatepickerModule,
@@ -21,6 +23,7 @@ import {
   NbSidebarModule,
   NbToastrModule,
   NbWindowModule,
+
 } from '@nebular/theme';
 
 @NgModule({
@@ -42,7 +45,9 @@ import {
     }),
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
-    MatDialogModule
+    MatDialogModule,
+    MatFormFieldModule,
+    MatSelectModule
   ],
   bootstrap: [AppComponent],
 })

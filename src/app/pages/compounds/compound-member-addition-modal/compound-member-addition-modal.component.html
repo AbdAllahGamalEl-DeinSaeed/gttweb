@@ -1,14 +1,28 @@
 <nb-card>
+  <nb-card-header>
+    Manage Compound Members
+    <button nbButton style="float:right;margin-right: 10px;height: 30px; width: 250px;" status="primary"(click)="AddNewCompoundMemberName()">Add new compound member</button>
+  </nb-card-header>
   <nb-card-body>
-    <div class="row">
-      <div class="col-md-12">
-        <label class="label">Name</label>
-        <input type="text" nbInput fullWidth  [(ngModel)]="data.newCompoundMemberName">
-      </div>
+    <div style="overflow-y: scroll; max-height: 500px; min-height:500px;">
+      <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+              <th>Name</th>
+              <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let newCompoundMemberName of newCompoundMemberNames; let i = index; trackBy:trackByFn" >
+              <td><input id = i type="text" nbInput fullwidth  [(ngModel)]="newCompoundMemberNames[i]"  ></td>
+              <td><button nbButton status="danger" class="button" (click)="RemoveCompoundMemberName(newCompoundMemberNames[i])">Remove</button></td>
+            </tr>
+        </tbody>
+      </table>
     </div>
   </nb-card-body>
   <nb-card-footer>
-      <button nbButton status="primary" (click)="AddNewCompoundMember()"> Add compound member</button>
+      <button nbButton status="primary" (click)="AddNewCompoundMember()"> Add compound member/members</button>
       &nbsp;
       <button  nbButton status="danger" (click)="Dismiss()"> Cancel changes</button>
   </nb-card-footer>

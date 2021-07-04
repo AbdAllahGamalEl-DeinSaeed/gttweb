@@ -22,7 +22,9 @@ export class CompoundMemberItems_CompoundHierarchyDTO{
 }
 
 export class Products_CompoundHierarchyDTO{
-  ProductId: number ;
-  ModelCode: string;
-  Name: string;
+  productId: number ;
+  modelCode: string;
+  name: string;
+  productCategoryName: string;
+  platformName: string;
 }

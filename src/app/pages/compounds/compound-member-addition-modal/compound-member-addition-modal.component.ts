@@ -15,42 +15,44 @@ import { MatDialogModule } from '@angular/material/dialog';
 export class CompoundMemberAdditionModalComponent implements OnInit {
 
   compoundMemberDetails : CompoundMembersDTO;
+  newCompoundMemberNames : string[];
 
   constructor(private httpServices: HTTPService,
     private dialogRef: MatDialogRef<CompoundMemberAdditionModalComponent>,
-    private toasterService: NbToastrService, @Inject(MAT_DIALOG_DATA) public data: {newCompoundMemberName : string})
+    private toasterService: NbToastrService)
   {
     this.compoundMemberDetails = new CompoundMembersDTO();
+    this.newCompoundMemberNames = [];
+    this.newCompoundMemberNames.push(null);
   }
 
   ngOnInit(): void {
   }
 
-  AddCompoundMember(){
+  AddNewCompoundMemberName()
+  {
+    this.newCompoundMemberNames.push(null);
+  }
 
-    debugger
-    //this.compoundMemberDetails.idCompound = this.data.compoundId;
-    //this.compoundMemberDetails.idParent = this.data.parentId;
-    /*this.httpServices.Post("https://localhost:44375/api/Definitions/addcompoundmember",null,this.compoundMemberDetails).subscribe(res =>
-    {
-      debugger
-      this.dialogRef.close();
-      console.log(res)
-        this.toasterService.show(
-          status || 'Addition success',
-          `Compound member has been added succesfully`,
-          { position, status });
-    })*/
+  RemoveCompoundMemberName(name)
+  {
+    var index = this.newCompoundMemberNames.indexOf(name);
+    this.newCompoundMemberNames.splice(index,1);
   }
 
   AddNewCompoundMember()
   {
-    this.dialogRef.close(this.data.newCompoundMemberName);
+    this.dialogRef.close(this.newCompoundMemberNames);
   }
 
   Dismiss()
   {
-    this.dialogRef.close();
+    this.newCompoundMemberNames = [];
+    this.dialogRef.close(this.newCompoundMemberNames);
   }
 
+  trackByFn(index: any, item: any)
+  {
+    return index;
+  }
 }

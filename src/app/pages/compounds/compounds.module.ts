@@ -12,7 +12,8 @@ import { NewCompoundComponent } from './new-compound/new-compound.component'
 import { UpdateCompoundComponent } from './update-compound/update-compound.component'
 import { CompoundMembersAssignmentComponent, AssignCompoundMembersService, FsIconCompoundMembersAssignmentComponent } from './compound-members-assignment/compound-members-assignment.component'
 import { CompoundMemberAdditionModalComponent } from './compound-member-addition-modal/compound-member-addition-modal.component'
-
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
  imports: [
@@ -29,8 +30,8 @@ import { CompoundMemberAdditionModalComponent } from './compound-member-addition
   NbSelectModule,
   RouterModule,
   CompoundsRoutingModule,
-
-
+  MatFormFieldModule,
+  MatSelectModule
   ],
   declarations: [
     ...routedComponents,
