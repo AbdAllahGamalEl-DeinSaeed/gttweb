@@ -9,6 +9,8 @@ import { ThemeModule } from '../../@theme/theme.module';
 import { ProductListComponent } from './product-list/product-list.component';
 import { FormsModule as ngFormsModule } from '@angular/forms';
 import { NewProductFormComponent } from './new-product-form/new-product-form.component';
+import { PlatformLookupsService } from './../../@core/lookups/platform-service'
+import { ProductLookupsService } from './../../@core/lookups/product-service'
 
 
 
@@ -34,5 +36,9 @@ import { NewProductFormComponent } from './new-product-form/new-product-form.com
     ProductListComponent,
     NewProductFormComponent,
   ],
+  providers: [
+    PlatformLookupsService,
+    ProductLookupsService
+  ]
 })
 export class ProductsModule { }

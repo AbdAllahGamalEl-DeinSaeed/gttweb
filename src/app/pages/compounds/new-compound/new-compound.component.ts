@@ -2,6 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { HTTPService } from './../../../@core/Services/HTTP/HTTPService';
 import { NbToastrService } from '@nebular/theme';
 import { CompoundDetailsDTO } from './../../../@core/Models/DTO/CompoundDetailsDTO'
+import { compoundApiLinks } from '../../../@core/api-links/compound-links';
+import { CompoundCategoryLookups } from '../../../@core/Models/lookups/CompoundLookups'
+import { CompoundLookupsService } from '../../../@core/lookups/compound-service'
+import { PlatformLookupsService } from '../../../@core/lookups/platform-service'
+import { PlatformLookups } from '../../../@core/Models/lookups/PlatformLookups'
+
 
 @Component({
   selector: 'ngx-new-compound',
@@ -11,28 +17,37 @@ import { CompoundDetailsDTO } from './../../../@core/Models/DTO/CompoundDetailsD
 export class NewCompoundComponent implements OnInit {
 
   compoundDetails: CompoundDetailsDTO;
-  constructor(private httpServices: HTTPService, private toasterService: NbToastrService)
+  compoundCategoryLookups: CompoundCategoryLookups[];
+  platformLookups: PlatformLookups[];
+
+  constructor(
+    private httpServices: HTTPService,
+    private toasterService: NbToastrService,
+    private compoundLookupsService: CompoundLookupsService,
+    private platformLookupsService: PlatformLookupsService)
   {
     this.compoundDetails = new CompoundDetailsDTO();
-
   }
 
-  ngOnInit(): void {
+  async ngOnInit()
+  {
+    this.platformLookups = await this.platformLookupsService.GetPlatforms() as PlatformLookups[];
   }
 
-  AddCompound(position, status){
+  async GetCompoundCategoriesByPlatform(value)
+  {
+    this.compoundCategoryLookups = await this.compoundLookupsService.GetCompoundCategoriesByPlatForm(value) as CompoundCategoryLookups[]
+  }
 
-    this.httpServices.Post("https://localhost:44375/api/Definitions/addcompound",null,this.compoundDetails).subscribe(res =>
+  AddCompound(position, status)
+  {
+    this.httpServices.Post(compoundApiLinks.addCompound,null,this.compoundDetails).subscribe(res =>
     {
-      debugger
-      console.log(res)
         this.toasterService.show(
           status || 'Addition success',
           `Compound has been added succesfully`,
           { position, status });
     })
-
-
   }
 
 }

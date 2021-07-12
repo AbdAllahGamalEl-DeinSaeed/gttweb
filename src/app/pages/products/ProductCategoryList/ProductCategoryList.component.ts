@@ -1,9 +1,11 @@
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { ProductCategories_ProductHierarchyDTO } from './../../../@core/Models/DTO/ProductHierarchy';
 import { HTTPService } from './../../../@core/Services/HTTP/HTTPService';
 import { Component, Input } from '@angular/core';
 import { NbSortDirection, NbSortRequest, NbTreeGridDataSource, NbTreeGridDataSourceBuilder,NbButton } from '@nebular/theme';
+import { productApiLinks } from './../../../@core/api-links/product-links'
+import { productUrls } from './../../../@core/urls/products'
 import { Console } from 'console';
 
 interface TreeNode<T> {
@@ -26,7 +28,7 @@ export class ProductCategoryListComponent{
   dataSource: NbTreeGridDataSource<ProductCategories_ProductHierarchyDTO>;
   sortColumn: string;
   sortDirection: NbSortDirection = NbSortDirection.NONE;
-
+  platformId: string;
 
   public ProductCategories: ProductCategories_ProductHierarchyDTO[] = [];
   private data: TreeNode<ProductCategories_ProductHierarchyDTO>[] ;
@@ -34,24 +36,25 @@ export class ProductCategoryListComponent{
   constructor(
     private httpServices: HTTPService,
     private dataSourceBuilder: NbTreeGridDataSourceBuilder<ProductCategories_ProductHierarchyDTO>,
-    private router :Router
+    private router :Router,
+    private route: ActivatedRoute
     )
  {
+  this.route.queryParams.subscribe((params) => {
+    this.platformId = params['platformId'];
+    this.GetProductCategoryList(()=>{
+      this.dataSource=this.dataSourceBuilder.create(this.data);
+      console.log(this.dataSource);
+     })
+  })
    //this.data = this.GetProductCategoryList();
-   this.GetProductCategoryList(()=>{
-     // debugger;
-    this.dataSource=this.dataSourceBuilder.create(this.data);
-    console.log(this.dataSource);
-   })
+
 
  }
 
   GetProductCategoryList(callbackFun)
  {
-  const request = 'https://localhost:44375/api/Definitions/getprodcutcategories_producthierarchy?platformId=1';
-  // tslint:disable-next-line: deprecation
-  this.httpServices.Get(request).subscribe((ProductCategories: TreeNode<ProductCategories_ProductHierarchyDTO>[])=>
-  // tslint:disable-next-line: no-console
+  this.httpServices.Get(productApiLinks.getProductCategories, {platformId: this.platformId}).subscribe((ProductCategories: TreeNode<ProductCategories_ProductHierarchyDTO>[])=>
   {
    this.data = this.MapData(ProductCategories);
    console.log("data",this.data);
@@ -108,7 +111,7 @@ return r
 
 DefineProductPage()
 {
-  this.router.navigate(['/pages/products/new-product-form']);
+  this.router.navigate([productUrls.newProductPage]);
 }
 }
 
@@ -134,7 +137,7 @@ export class FsIconComponent {
   return this.CategoryChildren.children !== undefined;
 }
  goToPage(pageName: string){
-  this.router.navigate(['/pages/products/product-list'], { queryParams: { Catogeryid : this.CategoryChildren.data.productCategoryId}});
+  this.router.navigate([productUrls.productListPage], { queryParams: { Catogeryid : this.CategoryChildren.data.productCategoryId}});
 }
 
 

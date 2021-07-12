@@ -1,92 +1,169 @@
-<div class="row">
-  <div class="col-lg-6">
-    <nb-card>
-      <nb-card-header>Product information:</nb-card-header>
-      <nb-card-body>
-        <input type="text" nbInput fullWidth placeholder="Model code"  [(ngModel)]="productDetails.modelCode"/>
-        <input type="text" nbInput fullWidth placeholder="Product type"  [(ngModel)]="productDetails.productType"/>
-        <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.lifecycle">Life cycle</nb-checkbox>
-        <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.obsolete">Obsolete</nb-checkbox>
-        <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.useInCompounds">Used in Compounds</nb-checkbox>
-        <input type="text" nbInput fullWidth placeholder="Weight"  [(ngModel)]="productDetails.weight">
-        <nb-select fullWidth placeholder="Platform" [(ngModel)]="productDetails.platform.idPlatform">
-          <nb-option value="1">DCS</nb-option>
-          <nb-option value="2">TRICON</nb-option>
-          <nb-option value="3">TRICON-CX</nb-option>
-          <nb-option value="4">TRIDENT</nb-option>
-          <nb-option value="5">TRI-GP</nb-option>
-          <nb-option value="6">IT</nb-option>
-          <nb-option value="7">DCS [BASF]</nb-option>
-          <nb-option value="8">TRI-COM</nb-option>
-          <nb-option value="9">Modicon</nb-option>
-          <nb-option value="10">DCS [FBM-S]</nb-option>
-          <nb-option value="13">DCS [FBM-C]</nb-option>
-          <nb-option value="16">PES</nb-option>
-          <nb-option value="18">M&I</nb-option>
-          <nb-option value="19">HDCS</nb-option>
-          <nb-option value="20">SCADA</nb-option>
-        </nb-select>
-        <nb-select fullWidth placeholder="Product category" [(ngModel)]="productDetails.productCategory.idCategory">
-          <nb-option value="2317">Licenses</nb-option>
-          <nb-option value="2318">Hardware</nb-option>
-          <nb-option value="2319">Cables</nb-option>
-          <nb-option value="2320">USB Peripherals</nb-option>
-          <nb-option value="2321">Software</nb-option>
-          <nb-option value="2322">Compact Fieldbus Modules</nb-option>
-          <nb-option value="2323">Fieldbus Modules</nb-option>
-          <nb-option value="2324">Termination Assemblies</nb-option>
-          <nb-option value="2329">LCD Monitors</nb-option>
-          <nb-option value="2330">Pressure Transmitters</nb-option>
-          <nb-option value="23231">Flanges</nb-option>
-          <nb-option value="2332">Temperature Transmitters</nb-option>
-          <nb-option value="2333">Cabinets</nb-option>
-        </nb-select>
-        <input type="number" nbInput fullWidth placeholder="Height (millimeter)"  [(ngModel)]="productDetails.heightMm">
-        <input type="number" nbInput fullWidth placeholder="Width (millimeter)"  [(ngModel)]="productDetails.widthMm">
-        <input type="number" nbInput fullWidth placeholder="Power usage (watt)"  [(ngModel)]="productDetails.powerUsageW">
-        <input type="number" nbInput fullWidth placeholder="Heat Generation(watt)"  [(ngModel)]="productDetails.heatGenerationW">
-      </nb-card-body>
-    </nb-card>
+<nb-card>
+  <nb-card-header>Product Details:
+    <button nbButton status="primary" style="float:right;margin-right: 10px;height: 30px; width: 250px;" class="button" (click)="AddProduct('right','success')">Add product</button>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="col-md-12 col-lg-12 col-xxxl-12">
+      <div class="row">
+        <div class="col-lg-6">
+          <nb-card>
+            <nb-card-header>Product information:</nb-card-header>
+            <nb-card-body>
 
-  </div>
+              <div class="form-group">
+                <label class="label">Device Type Name</label>
+                <nb-select fullWidth [(ngModel)]="productDetails.deviceType.idDeviceType">
+                  <nb-option  *ngFor="let deviceType of deviceTypeLookups" [value]="deviceType.id">{{deviceType.name}}</nb-option>
+                </nb-select>
+              </div>
 
-  <div class="col-lg-6">
-    <nb-card>
-      <nb-card-header>Product MFG information:</nb-card-header>
-      <nb-card-body>
-        <input type="text" nbInput fullWidth placeholder="Market group"  [(ngModel)]="productDetails.productMfgs[0].marketGroup">
-        <input type="text" nbInput fullWidth placeholder="MFG currency"  [(ngModel)]="productDetails.productMfgs[0].mfgCurrency">
-        <input type="text" nbInput fullWidth placeholder="Country of origin"  [(ngModel)]="productDetails.productMfgs[0].countryOfOrigin">
-        <input type="text" nbInput fullWidth placeholder="Delivery code"  [(ngModel)]="productDetails.productMfgs[0].deliveryCode">
-        <input type="number" nbInput fullWidth placeholder="Price sub tab"  [(ngModel)]="productDetails.productMfgs[0].priceSubtab">
-        <input type="number" nbInput fullWidth placeholder="Max Quantity"  [(ngModel)]="productDetails.productMfgs[0].maxQty">
-      </nb-card-body>
-    </nb-card>
+              <div class="form-group">
+                <label class="label">Model Code</label>
+                <input type="text" nbInput fullWidth [(ngModel)]="productDetails.modelCode"/>
+              </div>
 
-    <nb-card>
-      <nb-card-header>Price Options information:</nb-card-header>
-      <nb-card-body>
-        <input type="number" nbInput fullWidth placeholder="Transfer price"  [(ngModel)]="productDetails.productMfgs[0].priceOption.transferPrice">
-        <input type="number" nbInput fullWidth placeholder="List price"  [(ngModel)]="productDetails.productMfgs[0].priceOption.listPrice">
-      </nb-card-body>
-    </nb-card>
-  </div>
-</div>
+              <div class="form-group">
+                <label class="label">Product Type</label>
+                <input type="text" nbInput fullWidth  [(ngModel)]="productDetails.productType"/>
+              </div>
 
-<div class="row">
-  <div class="col-lg-6">
-    <nb-card>
-      <nb-card-header>Text Description information:</nb-card-header>
-      <nb-card-body>
-        <input type="text" nbInput fullWidth placeholder="Short name"  [(ngModel)]="productDetails.textDesciption.valueShort">
-        <input type="text" nbInput fullWidth placeholder="Long Name"  [(ngModel)]="productDetails.textDesciption.valueLong">
-      </nb-card-body>
-    </nb-card>
-  </div>
+              <div class="form-group">
+                <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.lifecycle">Life cycle</nb-checkbox>
+              </div>
 
-  <div class="col-lg-6">
-    <button nbButton class ="add-button-style" status="success"(click)="AddProduct('right','success')">Add product</button>
-  </div>
-</div>
+              <div class="form-group">
+                <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.obsolete">Obsolete</nb-checkbox>
+              </div>
 
+              <div class="form-group">
+                <nb-checkbox status="success" class="checkbox-style" [(ngModel)]="productDetails.useInCompounds">Used in Compounds</nb-checkbox>
+              </div>
 
+              <div class="form-group">
+                <label class="label">Weight</label>
+                <input type="text" nbInput fullWidth  [(ngModel)]="productDetails.weight">
+              </div>
+
+              <div class="form-group">
+                <label class="label">Platform Name</label>
+                <nb-select fullWidth (selectedChange)="GetProductCategories($event)"  [(ngModel)]="productDetails.platform.idPlatform">
+                  <nb-option *ngFor="let platform of platformLookups" [value]="platform.id">{{platform.name}}</nb-option>
+                </nb-select>
+              </div>
+
+              <div class="form-group">
+                <label class="label">Product Category Name</label>
+                <nb-select fullWidth [(ngModel)]="productDetails.productCategory.idCategory">
+                  <nb-option  *ngFor="let productCategory of productCategoryLookups" [value]="productCategory.id">{{productCategory.name}}</nb-option>
+                </nb-select>
+              </div>
+
+              <div class="form-group">
+                <label class="label">Height (millimeter)</label>
+                <input type="number" nbInput fullWidth [(ngModel)]="productDetails.heightMm">
+              </div>
+
+              <div class="form-group">
+                <label class="label">Width (millimeter)</label>
+                <input type="number" nbInput fullWidth [(ngModel)]="productDetails.widthMm">
+              </div>
+
+              <div class="form-group">
+                <label class="label">Power usage (watt)</label>
+                <input type="number" nbInput fullWidth  [(ngModel)]="productDetails.powerUsageW">
+              </div>
+
+              <div class="form-group">
+                <label class="label">Heat Generation(watt)</label>
+                <input type="number" nbInput fullWidth [(ngModel)]="productDetails.heatGenerationW">
+              </div>
+
+            </nb-card-body>
+          </nb-card>
+
+        </div>
+
+        <div class="col-lg-6">
+          <nb-card>
+            <nb-card-header>Product MFG information:</nb-card-header>
+            <nb-card-body>
+
+              <div class="form-group">
+                <label class="label">MFG name</label>
+                <nb-select fullWidth [(ngModel)]="productDetails.productMfgs[0].idMfg">
+                  <nb-option  *ngFor="let mfg of mfgLookups" [value]="mfg.id">{{mfg.name}}</nb-option>
+                </nb-select>
+              </div>
+
+              <div class="form-group">
+                <label class="label">MFG currency</label>
+                <nb-select fullWidth (selectedChange)="GetMarketGroups($event)"  [(ngModel)]="productDetails.productMfgs[0].mfgCurrency">
+                  <nb-option *ngFor="let mfgCurrency of mfgCurrenyLookups" [value]="mfgCurrency.currencyCode">{{mfgCurrency.currencyCode}}</nb-option>
+                </nb-select>
+              </div>
+
+              <div class="form-group">
+                <label class="label">Market group</label>
+                <nb-select fullWidth [(ngModel)]="productDetails.productMfgs[0].marketGroup">
+                  <nb-option  *ngFor="let marketGroup of marketGroupLookups" [value]="marketGroup.marketGroupValue">{{marketGroup.marketGroupValue}}</nb-option>
+                </nb-select>
+              </div>
+
+              <div class="form-group">
+                <label class="label">Country of origin</label>
+                <input type="text" nbInput fullWidth [(ngModel)]="productDetails.productMfgs[0].countryOfOrigin">
+              </div>
+
+              <div class="form-group">
+                <label class="label">Delivery code</label>
+                <nb-select fullWidth [(ngModel)]="productDetails.productMfgs[0].deliveryCode">
+                  <nb-option  *ngFor="let delivery of deliveryLookups" [value]="delivery.deliveryCode">{{delivery.deliveryCode}}</nb-option>
+                </nb-select>
+              </div>
+
+              <div class="form-group">
+                <label class="label">Max Quantity</label>
+                <input type="number" nbInput fullWidth [(ngModel)]="productDetails.productMfgs[0].maxQty">
+              </div>
+
+            </nb-card-body>
+          </nb-card>
+
+          <nb-card>
+            <nb-card-header>Price Options information:</nb-card-header>
+            <nb-card-body>
+
+              <div class="form-group">
+                <label class="label">Transfer price</label>
+                <input type="number" nbInput fullWidth [(ngModel)]="productDetails.productMfgs[0].priceOption.transferPrice">
+              </div>
+
+              <div class="form-group">
+                <label class="label">List price</label>
+                <input type="number" nbInput fullWidth [(ngModel)]="productDetails.productMfgs[0].priceOption.listPrice">
+              </div>
+
+           </nb-card-body>
+          </nb-card>
+
+          <nb-card>
+            <nb-card-header>Text Description information:</nb-card-header>
+            <nb-card-body>
+
+              <div class="form-group">
+                <label class="label">Short name</label>
+                <input type="text" nbInput fullWidth [(ngModel)]="productDetails.textDesciption.valueShort">
+              </div>
+
+              <div class="form-group">
+                <label class="label">Long Name</label>
+                <input type="text" nbInput fullWidth [(ngModel)]="productDetails.textDesciption.valueLong">
+              </div>
+
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>

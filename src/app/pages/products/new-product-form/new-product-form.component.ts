@@ -2,6 +2,12 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 import { ProductDetailsDTO, ProductCategory, TextDesciption, ProductMfg, PriceOption } from './../../../@core/Models/DTO/ProductDetailsDTO';
 import { HTTPService } from './../../../@core/Services/HTTP/HTTPService';
 import { NbToastrService } from '@nebular/theme';
+import { productApiLinks } from './../../../@core/api-links/product-links'
+import { PlatformLookupsService } from './../../../@core/lookups/platform-service'
+import { ProductLookupsService } from './../../../@core/lookups/product-service'
+import { PlatformLookups } from './../../../@core/Models/lookups/PlatformLookups'
+import { ProductCategoryLookups, MfgCurrenyLookups, MarketGroupLookups, MfgLookups, DeviceTypeLookups, DeliveryLookups } from './../../../@core/Models/lookups/ProductLookups'
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   templateUrl: './new-product-form.component.html',
@@ -9,57 +15,53 @@ import { NbToastrService } from '@nebular/theme';
 })
 export class NewProductFormComponent implements OnInit {
 
-  productDetails? : ProductDetailsDTO;
-
-  modelCode: string = "";
-  productType: string = "";
-  lifecycle?: boolean = false;
-  obsolete?: boolean = false;
-  useInCompounds: boolean = false;
-  weight?: any = "";
-  valueShort: string = "";
-  valueLong?: string= "";
-  transferPrice: number = null;
-  listPrice: number = null;
-  heightMm?: any = "";
-  widthMm?: any = "";
-  powerUsageW?: any = "";
-  heatGenerationW?: any = "";
-  idPlatform: number = null;
-  idCategory: number = null;
-  marketGroup: string = "";
-  mfgCurrency: string = "";
-  countryOfOrigin: string = "";
-  deliveryCode: string = "";
-  priceSubtab: number;
-  maxQty: number;
+  productDetails?: ProductDetailsDTO;
+  platformLookups: PlatformLookups[];
+  productCategoryLookups: ProductCategoryLookups[];
+  mfgCurrenyLookups: MfgCurrenyLookups[];
+  marketGroupLookups: MarketGroupLookups[];
+  mfgLookups: MfgLookups[];
+  deviceTypeLookups: DeviceTypeLookups[];
+  deliveryLookups: DeliveryLookups[];
 
   @HostBinding('class')
   classes = 'example-items-rows';
 
-  constructor(private httpServices: HTTPService, private toastrService: NbToastrService) {
+  constructor(private httpServices: HTTPService,
+    private toastrService: NbToastrService,
+    private productLookupsService : ProductLookupsService,
+    private platformLookupsService: PlatformLookupsService)
+  {
     this.productDetails = new ProductDetailsDTO();
-
   }
 
-  ngOnInit(): void {
+  async ngOnInit()
+  {
+    this.platformLookups = await this.platformLookupsService.GetPlatforms() as PlatformLookups[];
+    this.mfgCurrenyLookups = await this.productLookupsService.GetMfgCurrencies() as MfgCurrenyLookups[];
+    this.deviceTypeLookups = await this.productLookupsService.GetDeviceTypes() as DeviceTypeLookups[];
+    this.mfgLookups = await this.productLookupsService.GetMfgs() as MfgLookups[];
+    this.deliveryLookups = await this.productLookupsService.GetDeliveries() as DeliveryLookups[];
   }
-  AddProduct(position, status){
 
-    this.productDetails.deviceType.idDeviceType = 10021
-    this.productDetails.productMfgs[0].idMfg = 17
+  async GetProductCategories(platformId)
+  {
+    this.productCategoryLookups = await this.productLookupsService.GetProductCategory(platformId) as ProductCategoryLookups[];
+  }
 
-    this.httpServices.Post("https://localhost:44375/api/Definitions/addproduct",null,this.productDetails).subscribe(res =>
+  async GetMarketGroups(currencyCode)
+  {
+    this.marketGroupLookups = await this.productLookupsService.GetMarketGroups(currencyCode) as MarketGroupLookups[];
+  }
+
+  AddProduct(position, status)
+  {
+    this.httpServices.Post(productApiLinks.addProduct,null,this.productDetails).subscribe(res =>
     {
-      debugger
-      console.log(res)
         this.toastrService.show(
           status || 'Success',
           `Product addition`,
           { position, status });
     })
-
-
   }
-
 }

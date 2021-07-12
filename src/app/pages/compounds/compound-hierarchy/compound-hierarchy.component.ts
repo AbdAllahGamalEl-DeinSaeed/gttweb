@@ -2,8 +2,11 @@ import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { CompoundCategories_CompoundHierarchyDTO  } from './../../../@core/Models/DTO/CompoundHierarchyDTO';
 import { HTTPService } from './../../../@core/Services/HTTP/HTTPService';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NbSortDirection, NbSortRequest, NbTreeGridDataSource, NbTreeGridDataSourceBuilder,NbButton } from '@nebular/theme';
+import { compoundApiLinks } from './../../../@core/api-links/compound-links'
+import { compoundUrls } from './../../../@core/urls/compounds'
+import { ActivatedRoute  } from '@angular/router';
 import { Console } from 'console';
 
 interface TreeNode<T> {
@@ -25,7 +28,7 @@ export class CompoundHierarchyComponent{
   dataSource: NbTreeGridDataSource<CompoundCategories_CompoundHierarchyDTO>;
   sortColumn: string;
   sortDirection: NbSortDirection = NbSortDirection.NONE;
-
+  platformId: string;
 
   public CompoundCategories: CompoundCategories_CompoundHierarchyDTO[] = [];
   private data: TreeNode<CompoundCategories_CompoundHierarchyDTO>[] ;
@@ -33,24 +36,27 @@ export class CompoundHierarchyComponent{
   constructor(
     private httpServices: HTTPService,
     private dataSourceBuilder: NbTreeGridDataSourceBuilder<CompoundCategories_CompoundHierarchyDTO>,
-    private router :Router
+    private router :Router,
+    private route: ActivatedRoute
     )
- {
-   this.GetCompoundCategories(()=>{
-     // debugger;
-    this.dataSource=this.dataSourceBuilder.create(this.data);
-    console.log(this.dataSource);
+   {
+   this.route.queryParams.subscribe((params) => {
+     this.platformId = params['platformId'];
+     this.GetCompoundCategories(()=>{
+      this.dataSource=this.dataSourceBuilder.create(this.data);
+     })
    })
+ }
+
+ ngOnInit(){
 
  }
 
  GetCompoundCategories(callbackFun)
  {
-  const request = 'https://localhost:44375/api/Definitions/getcompoundcategories_compoundhierarchy?platformId=1';
-  this.httpServices.Get(request).subscribe((CompoundCategories: TreeNode<CompoundCategories_CompoundHierarchyDTO>[])=>
+  this.httpServices.Get(compoundApiLinks.getCompoundCategories, {platformId: this.platformId}).subscribe((CompoundCategories: TreeNode<CompoundCategories_CompoundHierarchyDTO>[])=>
   {
    this.data = this.MapData(CompoundCategories);
-   console.log("data",this.data);
    callbackFun();
   }) ;
   return this.data ;
@@ -58,7 +64,7 @@ export class CompoundHierarchyComponent{
 
  AddCompoundPage()
  {
-   this.router.navigate(['/pages/compounds/new-compound']);
+   this.router.navigate([compoundUrls.addCompoundPage]);
  }
 
  MapData(res){
@@ -74,7 +80,6 @@ export class CompoundHierarchyComponent{
    x=this.mapObjData(_obj);
 
    x.children= _obj.compoundCategoriesChildren?.map(a=>this.mapObjData(a) )
-   console.log(x);
    return x
  }
 
@@ -104,9 +109,10 @@ getShowOn(index: number) {
   const nextColumnStep = 100;
   return minWithForMultipleColumns + (nextColumnStep * index);
 }
-GetData(r){
-  console.log(r);
-return r
+
+GetData(r)
+{
+  return r;
 }
 
 }
@@ -132,7 +138,7 @@ export class FsIconComponent {
   return this.CategoryChildren.children !== undefined;
 }
  goToPage(pageName: string){
-  this.router.navigate(['/pages/compounds/compound-list'], { queryParams: { Catogeryid : this.CategoryChildren.data.idCompoundCategory}});
+  this.router.navigate([compoundUrls.compoundListPage], { queryParams: { Catogeryid : this.CategoryChildren.data.idCompoundCategory}});
 }
 
 }

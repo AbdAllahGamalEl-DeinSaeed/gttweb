@@ -37,7 +37,7 @@ export class ProductAssignment
 {
   productId: number;
   modelCode: string;
-  name: String;
+  name: string;
   isAssigned: boolean;
   productCategoryName: string;
   platformName: string;

@@ -4,6 +4,7 @@ import { NbToastrService } from '@nebular/theme';
 import { CompoundDetailsDTO } from './../../../@core/Models/DTO/CompoundDetailsDTO';
 import { ActivatedRoute  } from '@angular/router';
 import { Router } from '@angular/router';
+import { compoundApiLinks } from '../../../@core/api-links/compound-links';
 
 @Component({
   selector: 'ngx-update-compound',
@@ -29,8 +30,7 @@ export class UpdateCompoundComponent implements OnInit {
 
   GetCompound(id: number)
   {
-    const request = 'https://localhost:44375/api/Definitions/getcompound';
-    this.httpServices.Get(request ,{compoundId: id}).subscribe((response: CompoundDetailsDTO) =>
+    this.httpServices.Get(compoundApiLinks.getCompound ,{compoundId: id}).subscribe((response: CompoundDetailsDTO) =>
     {
       this.compoundDetails = response ;
       console.log(this.compoundDetails);

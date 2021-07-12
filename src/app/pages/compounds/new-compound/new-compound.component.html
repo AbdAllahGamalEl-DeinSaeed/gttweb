@@ -6,22 +6,8 @@
         <div class="col-sm-6">
           <div class="form-group">
             <label class="label">Platform Name</label>
-            <nb-select fullWidth placeholder="Platform" [(ngModel)]="compoundDetails.platform.idPlatform">
-              <nb-option value="1">DCS</nb-option>
-              <nb-option value="2">TRICON</nb-option>
-              <nb-option value="3">TRICON-CX</nb-option>
-              <nb-option value="4">TRIDENT</nb-option>
-              <nb-option value="5">TRI-GP</nb-option>
-              <nb-option value="6">IT</nb-option>
-              <nb-option value="7">DCS [BASF]</nb-option>
-              <nb-option value="8">TRI-COM</nb-option>
-              <nb-option value="9">Modicon</nb-option>
-              <nb-option value="10">DCS [FBM-S]</nb-option>
-              <nb-option value="13">DCS [FBM-C]</nb-option>
-              <nb-option value="16">PES</nb-option>
-              <nb-option value="18">M&I</nb-option>
-              <nb-option value="19">HDCS</nb-option>
-              <nb-option value="20">SCADA</nb-option>
+            <nb-select fullWidth placeholder="Platform" (selectedChange)="GetCompoundCategoriesByPlatform($event)"  [(ngModel)]="compoundDetails.platform.idPlatform">
+              <nb-option *ngFor="let platform of platformLookups" [value]="platform.id">{{platform.name}}</nb-option>
             </nb-select>
           </div>
         </div>
@@ -29,11 +15,7 @@
           <div class="form-group">
             <label class="label">Compound Category Name</label>
             <nb-select fullWidth placeholder="Compound Category Name" [(ngModel)]="compoundDetails.compoundCategory.idCompoundCategory">
-              <nb-option value="10500">HW</nb-option>
-              <nb-option value="2">Control Processors</nb-option>
-              <nb-option value="7">Workstation</nb-option>
-              <nb-option value="43">Server</nb-option>
-              <nb-option value="44">NetWork Components</nb-option>
+              <nb-option  *ngFor="let compoundCategory of compoundCategoryLookups" [value]="compoundCategory.id">{{compoundCategory.name}}</nb-option>
             </nb-select>
           </div>
         </div>

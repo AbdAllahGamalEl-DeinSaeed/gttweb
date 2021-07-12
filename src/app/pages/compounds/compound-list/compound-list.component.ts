@@ -8,6 +8,11 @@ import { NbSortDirection, NbSortRequest, NbTreeGridDataSource, NbTreeGridDataSou
 import { Router } from '@angular/router';
 import { MatDialog } from'@angular/material/dialog'
 import {CompoundMemberAdditionModalComponent } from '../compound-member-addition-modal/compound-member-addition-modal.component'
+import { compoundApiLinks } from './../../../@core/api-links/compound-links'
+import { CompoundCategoryLookups } from '../../../@core/Models/lookups/CompoundLookups';
+import { PlatformLookups } from '../../../@core/Models/lookups/PlatformLookups';
+import { CompoundLookupsService } from '../../../@core/lookups/compound-service';
+import { PlatformLookupsService } from '../../../@core/lookups/platform-service';
 
 interface TreeNode<T> {
   data: T;
@@ -35,8 +40,7 @@ export class ProductListService {
 
   AssignProductList()
   {
-    const request = 'https://localhost:44375/api/Definitions/getproductsbycompoundmember_compoundhierarchy';
-    this.httpServices.Get(request ,{compoundMemberId: this.compoundMemberId}).subscribe((response: Products_CompoundHierarchyDTO[]) =>
+    this.httpServices.Get(compoundApiLinks.getProductsByCompoundMember ,{compoundMemberId: this.compoundMemberId}).subscribe((response: Products_CompoundHierarchyDTO[]) =>
     {
       this.productsList = response;
     });
@@ -52,8 +56,7 @@ export class ProductListService {
 
   GetAllProducts()
   {
-    const request = 'https://localhost:44375/api/Definitions/getallproductsforassignment';
-    this.httpServices.Get(request ,{compoundMemberId: this.compoundMemberId}).subscribe((response: ProductAssignment[]) =>
+    this.httpServices.Get(compoundApiLinks.getAllProducts ,{compoundMemberId: this.compoundMemberId}).subscribe((response: ProductAssignment[]) =>
     {
       console.log(response);
       this.productsAssignment = response;
@@ -77,8 +80,7 @@ export class ProductListService {
   SaveProductAssignments(position, status)
   {
     const productAssignmentApi = this.productsAssignment.filter(p => p.isAssigned == true);
-    const request = 'https://localhost:44375/api/Definitions/assignproductstocompoundmember';
-    this.httpServices.Post(request, {compoundMemberId : this.compoundMemberId, firstAssignedProductId: this.mainOptionProductId} ,productAssignmentApi).subscribe(res =>
+    this.httpServices.Post(compoundApiLinks.assignProductsToCompoundMember, {compoundMemberId : this.compoundMemberId, firstAssignedProductId: this.mainOptionProductId} ,productAssignmentApi).subscribe(res =>
     {
       console.log(res);
       this.toasterService.show(
@@ -138,8 +140,7 @@ export class CompoundListService {
 
   GetCompoundMembersFromApi(id)
   {
-    const request = 'https://localhost:44375/api/Definitions/getcompoundmembers_compoundhierarchy';
-    this.httpServices.Get(request, {compoundId : id}).subscribe((CompoundMembers:  CompoundMembers_CompoundHierarchyDTO[]) =>
+    this.httpServices.Get(compoundApiLinks.getCompoundMembers, {compoundId : id}).subscribe((CompoundMembers:  CompoundMembers_CompoundHierarchyDTO[]) =>
     {
       this.compoundMembersApi = CompoundMembers;
       this.PrepareCompoundMembers(this.compoundMembersApi);
@@ -155,8 +156,7 @@ export class CompoundListService {
 
   GetCompoundMemberNames(compoundId : number)
   {
-    const request = 'https://localhost:44375/api/Definitions/getcompoundmembernames';
-    this.httpServices.Get(request, {compoundId : compoundId}).subscribe((CompoundMemberNames:  string[]) =>
+    this.httpServices.Get(compoundApiLinks.getCompoundMemberNames, {compoundId : compoundId}).subscribe((CompoundMemberNames:  string[]) =>
     {
       this.compoundMemberNames = CompoundMemberNames;
     });
@@ -320,9 +320,7 @@ export class CompoundListService {
   RestructureCompoundMembersTree(position,status)
   {
     this.compoundMembersTree.idCompound = this.compoundId;
-    debugger;
-    const request = "https://localhost:44375/api/Definitions/restructurecompoundmembertree";
-    this.httpServices.Post(request, null, this.compoundMembersTree).subscribe(res =>
+    this.httpServices.Post(compoundApiLinks.restructureComoundMemberTree, null, this.compoundMembersTree).subscribe(res =>
     {
         this.toasterService.show(
           status || 'Compound member restructure success',
@@ -353,6 +351,8 @@ export class CompoundListComponent implements OnInit {
   sortDirection: NbSortDirection = NbSortDirection.NONE;
   isCompoundEditable: boolean;
   newCompoundMemberName : string;
+  compoundCategoryLookups: CompoundCategoryLookups[];
+  platformLookups: PlatformLookups[];
 
   public CompoundMembers: CompoundMembers_CompoundHierarchyDTO[] = [];
   private data: TreeNode<CompoundMembers_CompoundHierarchyDTO>[] ;
@@ -364,12 +364,16 @@ export class CompoundListComponent implements OnInit {
       private toasterService: NbToastrService,
       private router :Router,
       public compoundListService: CompoundListService,
-      public dialog: MatDialog)
+      public dialog: MatDialog,
+      private compoundLookupsService: CompoundLookupsService,
+      private platformLookupsService: PlatformLookupsService)
   {
 
   }
 
-  ngOnInit(): void {
+  async ngOnInit()
+  {
+    this.platformLookups = await this.platformLookupsService.GetPlatforms() as PlatformLookups[];
     this.categoryid = this.route.snapshot.queryParamMap.get('Catogeryid');
     this.GetCompoundList(this.categoryid)  ;
     this.compoundId = 320;
@@ -378,11 +382,14 @@ export class CompoundListComponent implements OnInit {
     this.productListService.isProductAssignmentCalled = false;
   }
 
+  async GetCompoundCategoriesByPlatform(value)
+  {
+    this.compoundCategoryLookups = await this.compoundLookupsService.GetCompoundCategoriesByPlatForm(value) as CompoundCategoryLookups[]
+  }
+
   GetCompoundList(id: any )
   {
-    console.log(id);
-    const request = 'https://localhost:44375/api/Definitions/getcompounds_compoundhierarchy';
-    this.httpServices.Get(request ,{compoundCategoryId: id}).subscribe((response: Compounds_CompoundHierarchyDTO[]) =>
+    this.httpServices.Get(compoundApiLinks.getCompoundList ,{compoundCategoryId: id}).subscribe((response: Compounds_CompoundHierarchyDTO[]) =>
     {
       this.compoundsList = response ;
       console.log(this.compoundsList);
@@ -391,8 +398,7 @@ export class CompoundListComponent implements OnInit {
 
   GetCompound(id: number )
     {
-      const request = 'https://localhost:44375/api/Definitions/getcompound';
-      this.httpServices.Get(request , {compoundId: id}).subscribe((response :CompoundDetailsDTO)=>
+      this.httpServices.Get(compoundApiLinks.getCompound , {compoundId: id}).subscribe((response :CompoundDetailsDTO)=>
       {
         this.compoundDetails = response;
       });
@@ -418,7 +424,7 @@ export class CompoundListComponent implements OnInit {
 
   SaveCompoundUpdate(position, status)
   {
-    this.httpServices.Post("https://localhost:44375/api/Definitions/updatecompound",null,this.compoundDetails).subscribe(res =>
+    this.httpServices.Post(compoundApiLinks.updateCompound,null,this.compoundDetails).subscribe(res =>
     {
       console.log(res)
         this.toasterService.show(
@@ -426,6 +432,7 @@ export class CompoundListComponent implements OnInit {
           `Compound has been updated succesfully`,
           { position, status });
       this.isCompoundEditable = false;
+      this.GetCompound(this.compoundId);
     })
   }
 
@@ -532,32 +539,33 @@ export class FsIconCompoundListComponent {
 
  AddChildCompoundMemberNode(parentName: string, childName: string)
  {
+   debugger;
    let newCompoundMemberChild = { name:childName,idCompoundMember:null,compoundMembersChildren: null};
    let isChildAdded = false;
 
    for(var i = 0; i < this.compoundListService.compoundMemberListData.length; i++)
    {
      console.log("result" ,this.compoundListService.compoundMemberListData[i]);
-     if(this.compoundListService.compoundMemberListData[i].compoundMembersChildren != null)
+     if(this.compoundListService.compoundMemberListData[i].name == parentName)
      {
-       for(var j = 0; j< this.compoundListService.compoundMemberListData[i].compoundMembersChildren.length; j++)
+       if (this.compoundListService.compoundMemberListData[i].compoundMembersChildren == null)
        {
-         isChildAdded = this.FindChildeNodeForAddition(
-           this.compoundListService.compoundMemberListData[i].compoundMembersChildren[j],
-           parentName,
-           childName,
-           newCompoundMemberChild);
+         this.compoundListService.compoundMemberListData[i].compoundMembersChildren = [];
        }
+       this.compoundListService.compoundMemberListData[i].compoundMembersChildren.push(newCompoundMemberChild);
      }
      else
      {
-       if(this.compoundListService.compoundMemberListData[i].name == parentName)
+       if(this.compoundListService.compoundMemberListData[i].compoundMembersChildren != null)
        {
-         if (this.compoundListService.compoundMemberListData[i].compoundMembersChildren == null)
+         for(var j = 0; j< this.compoundListService.compoundMemberListData[i].compoundMembersChildren.length; j++)
          {
-           this.compoundListService.compoundMemberListData[i].compoundMembersChildren = [];
+           isChildAdded = this.FindChildeNodeForAddition(
+             this.compoundListService.compoundMemberListData[i].compoundMembersChildren[j],
+             parentName,
+             childName,
+             newCompoundMemberChild);
          }
-         this.compoundListService.compoundMemberListData[i].compoundMembersChildren.push(newCompoundMemberChild);
        }
      }
    }

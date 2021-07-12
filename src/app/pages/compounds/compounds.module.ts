@@ -14,6 +14,8 @@ import { CompoundMembersAssignmentComponent, AssignCompoundMembersService, FsIco
 import { CompoundMemberAdditionModalComponent } from './compound-member-addition-modal/compound-member-addition-modal.component'
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
+import {CompoundLookupsService} from '../../@core/lookups/compound-service'
+import {PlatformLookupsService} from '../../@core/lookups/platform-service'
 
 @NgModule({
  imports: [
@@ -48,7 +50,9 @@ import {MatSelectModule} from '@angular/material/select';
   providers: [
     ProductListService,
     AssignCompoundMembersService,
-    CompoundListService
+    CompoundListService,
+    PlatformLookupsService,
+    CompoundLookupsService
   ]
 })
 export class CompoundsModule { }
