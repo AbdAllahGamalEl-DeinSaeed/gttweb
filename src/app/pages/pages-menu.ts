@@ -2,17 +2,17 @@ import { NbMenuItem } from '@nebular/theme';
 
 export const MENU_ITEMS: NbMenuItem[] = [
 
-  {
+ /* {
     title: 'Admin Dashboard',
     icon: 'home-outline',
     link: '/pages/iot-dashboard',
-  },
+  },*/
   {
     title: 'Definitions',
     group: true,
   },
 
-  {
+ /* {
     title: 'Forms',
     icon: 'edit-2-outline',
     children: [
@@ -27,6 +27,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
     ],
   },
+  */
   {
     title: 'Compounds',
     icon: 'edit-2-outline',
@@ -192,6 +193,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
     ],
   },
+  /*
   {
     title: 'Miscellaneous',
     icon: 'shuffle-2-outline',
@@ -202,5 +204,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
     ],
   }
+  */
 
 ];

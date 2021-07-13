@@ -35,7 +35,7 @@ const routes: Routes = [{
     },
     {
       path: '',
-      redirectTo: 'iot-dashboard',
+      redirectTo: 'compound-hierarchy?platformId=1',
       pathMatch: 'full',
     },
     {
