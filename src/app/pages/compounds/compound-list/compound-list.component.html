@@ -126,118 +126,123 @@
         </div>
       </nb-card-body>
     </nb-card>
-    <nb-card *ngIf="compoundDetails && this.isCompoundEditable == true">
-      <nb-card-header>Compound Details
-        <button nbButton style="float:right;margin-right: 10px;height: 30px; width: 200px;" (click)="SaveCompoundUpdate('right','success')" status="success">Save Changes</button>
-        <button nbButton style="float:right; margin-right: 10px;height: 30px; width: 200px;" (click)="CancelCompoundUpdate()" status="danger">Cancel Changes</button>
-      </nb-card-header>
-      <nb-card-body >
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label class="label">Platform Name</label>
-              <nb-select fullWidth placeholder="Platform" (selectedChange)="GetCompoundCategoriesByPlatform($event)"  [(ngModel)]="compoundDetails.platform.idPlatform">
-                <nb-option *ngFor="let platform of platformLookups" [value]="platform.id">{{platform.name}}</nb-option>
-              </nb-select>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label class="label">Compound Category Name</label>
-              <nb-select fullWidth placeholder="Compound Category Name" [(ngModel)]="compoundDetails.compoundCategory.idCompoundCategory">
-                <nb-option  *ngFor="let compoundCategory of compoundCategoryLookups" [value]="compoundCategory.id">{{compoundCategory.name}}</nb-option>
-              </nb-select>
-            </div>
-          </div>
-        </div>
 
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label class="label">Short Name</label>
-              <input type="text" nbInput fullWidth  [(ngModel)]="compoundDetails.shortname">
+    <div *ngIf="compoundDetails && this.isCompoundEditable == true">
+      <form #compoundRequestForm="ngForm">
+        <nb-card>
+          <nb-card-header>Compound Details
+            <button nbButton style="float:right;margin-right: 10px;height: 30px; width: 200px;" (click)="SaveCompoundUpdate('right','success')" status="success" [disabled]="!compoundRequestForm.form.valid">Save Changes</button>
+            <button nbButton style="float:right; margin-right: 10px;height: 30px; width: 200px;" (click)="CancelCompoundUpdate()" status="danger">Cancel Changes</button>
+          </nb-card-header>
+          <nb-card-body >
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Platform Name</label>
+                  <nb-select fullWidth placeholder="Platform" (selectedChange)="GetCompoundCategoriesByPlatform($event)"  [(ngModel)]="compoundDetails.platform.idPlatform" required name="compoundPlatform" #compoundPlatform="ngModel">
+                    <nb-option *ngFor="let platform of platformLookups" [value]="platform.id">{{platform.name}}</nb-option>
+                  </nb-select>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Compound Category Name</label>
+                  <nb-select fullWidth placeholder="Compound Category Name" [(ngModel)]="compoundDetails.compoundCategory.idCompoundCategory"  required name="compoundCategory" #compoundCategory="ngModel">
+                    <nb-option  *ngFor="let compoundCategory of compoundCategoryLookups" [value]="compoundCategory.id">{{compoundCategory.name}}</nb-option>
+                  </nb-select>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label class="label">Long Name</label>
-              <input type="text" nbInput fullWidth  [(ngModel)]="compoundDetails.name">
+
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Short Name</label>
+                  <input type="text" nbInput fullWidth name="shortName"  [(ngModel)]="compoundDetails.shortname">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Long Name</label>
+                  <input type="text" nbInput fullWidth name="name"  [(ngModel)]="compoundDetails.name">
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label class="label">Description</label>
-              <input type="text" nbInput fullWidth  [(ngModel)]="compoundDetails.description">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Description</label>
+                  <input type="text" nbInput fullWidth name="description"  [(ngModel)]="compoundDetails.description">
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox    [(ngModel)]="compoundDetails.redundant" >  <span>Redundant</span></nb-checkbox>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="redundant"   [(ngModel)]="compoundDetails.redundant">  <span>Redundant</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="configuratorUse"  [(ngModel)]="compoundDetails.configuratorUse" >  <span>Configurator Use</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="remoteIo"  [(ngModel)]="compoundDetails.remoteIo" >  <span>Remote Io</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="zone0"  [(ngModel)]="compoundDetails.zone0" >  <span>Zone 0</span></nb-checkbox>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox   [(ngModel)]="compoundDetails.configuratorUse" >  <span>Configurator Use</span></nb-checkbox>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox  name="zone1"  [(ngModel)]="compoundDetails.zone1" >  <span>Zone 1</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="zone2"  [(ngModel)]="compoundDetails.zone2" >  <span>Zone 2</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="zone20"  [(ngModel)]="compoundDetails.zone20" >  <span>Zone 20</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="zone21"  [(ngModel)]="compoundDetails.zone21" >  <span>Zone 21</span></nb-checkbox>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox   [(ngModel)]="compoundDetails.remoteIo" >  <span>Remote Io</span></nb-checkbox>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox  name="zone22"  [(ngModel)]="compoundDetails.zone22" >  <span>Zone 22</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="multiprotocol"  [(ngModel)]="compoundDetails.multiprotocol" >  <span>Multiprotocol</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <nb-checkbox name="universalIo"  [(ngModel)]="compoundDetails.universalIo" >  <span>Universal Io</span></nb-checkbox>
+                </div>
+              </div>
+              <div class="col-md-3">
+              </div>
             </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox   [(ngModel)]="compoundDetails.zone0" >  <span>Zone 0</span></nb-checkbox>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox    [(ngModel)]="compoundDetails.zone1" >  <span>Zone 1</span></nb-checkbox>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox   [(ngModel)]="compoundDetails.zone2" >  <span>Zone 2</span></nb-checkbox>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox   [(ngModel)]="compoundDetails.zone20" >  <span>Zone 20</span></nb-checkbox>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox   [(ngModel)]="compoundDetails.zone21" >  <span>Zone 21</span></nb-checkbox>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox    [(ngModel)]="compoundDetails.zone22" >  <span>Zone 22</span></nb-checkbox>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox   [(ngModel)]="compoundDetails.multiprotocol" >  <span>Multiprotocol</span></nb-checkbox>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <nb-checkbox   [(ngModel)]="compoundDetails.universalIo" >  <span>Universal Io</span></nb-checkbox>
-            </div>
-          </div>
-          <div class="col-md-3">
-          </div>
-        </div>
-      </nb-card-body>
-    </nb-card>
+          </nb-card-body>
+        </nb-card>
+      </form>
+    </div>
   </div>
 
   <div class="col-md-12 col-lg-12 col-xxxl-12">
@@ -318,7 +323,7 @@
 
   <div class="col-md-12 col-lg-12 col-xxxl-12">
     <nb-card *ngIf="productListService.isProductAssignmentCalled && !productListService.isProductAssignmentEditable">
-      <nb-card-header>Products Information:
+      <nb-card-header>Products Information for <u>{{ productListService.compoundMemberName}} </u>
         <button nbButton status="primary" class="button edit-button" (click)="productListService.EditProductAssignments()" >Update Product Assignment</button>
       </nb-card-header>
       <nb-card-body>
@@ -335,7 +340,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr  *ngFor="let products of productListService.productsList">
+            <tr  *ngFor="let products of productListService.productsAssignment">
               <td>{{ products.productId }}</td>
               <td>{{ products.productCategoryName }}</td>
               <td>{{ products.platformName }}</td>
@@ -349,25 +354,29 @@
       </nb-card-body>
     </nb-card>
     <nb-card *ngIf="productListService.isProductAssignmentCalled && productListService.isProductAssignmentEditable">
-      <nb-card-header>Products Information:
+      <nb-card-header>Products Information <u>{{ productListService.compoundMemberName}} </u>
       </nb-card-header>
       <nb-card-body>
         <div class="col-md-12 col-lg-12 col-xxxl-12">
           <nb-card>
             <nb-card-header>
-              Add Product to Compound Member
+              Add Product to {{ productListService.compoundMemberName}}:
             </nb-card-header>
             <nb-card-body>
               <div class="row">
                 <div class="col-sm-2" style="margin-top: 5px;">
-                  <label class="label">Compound Member Name:</label>
+                  <label class="label">Product Name:</label>
                 </div>
                 <div class="col-sm-4">
-                  <input type="text" nbInput fullWidth  [(ngModel)]="productListService.compoundMemberName">
+                  <input type="text" nbInput fullWidth  [(ngModel)]="productListService.productName">
                 </div>
+                <div class="col-sm-4">
+                  <button nbButton status="primary" class="button edit-button" (click)="productListService.SearchForProducts()" >Search for Products</button>
+                </div>
+
               </div>
               <br/>
-              <div *ngIf="productListService.compoundMemberName != null" style="overflow-y: scroll; max-height: 500px;">
+              <div style="overflow-y: scroll; max-height: 500px;">
                 <table class="table table-bordered table-hover">
                   <thead>
                       <tr>
@@ -379,7 +388,7 @@
                       </tr>
                   </thead>
                   <tbody *ngFor="let product of productListService.productsAssignment">
-                      <tr  *ngIf="product.name.toLowerCase().search(productListService.compoundMemberName.toLowerCase()) != -1 && product.isAssigned == false">
+                      <tr *ngIf="product.isAssigned == false">
                         <td>{{ product.modelCode }}</td>
                         <td>{{ product.platformName }}</td>
                         <td>{{ product.productCategoryName }}</td>

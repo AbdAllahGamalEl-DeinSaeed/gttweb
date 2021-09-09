@@ -1,7 +1,7 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CompoundsRoutingModule , routedComponents} from './compounds-routing.module';
-import { NbCardModule, NbIconModule, NbInputModule, NbTreeGridModule,NbListModule,NbSelectModule,  NbCheckboxModule,NbButtonModule
+import { NbCardModule, NbIconModule, NbAutocompleteModule, NbTooltipModule, NbInputModule, NbTreeGridModule,NbListModule,NbSelectModule,  NbCheckboxModule,NbButtonModule
 } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ThemeModule } from '../../@theme/theme.module';
@@ -30,6 +30,8 @@ import {PlatformLookupsService} from '../../@core/lookups/platform-service'
   ngFormsModule,
   NbButtonModule,
   NbSelectModule,
+  NbTooltipModule,
+  NbAutocompleteModule,
   RouterModule,
   CompoundsRoutingModule,
   MatFormFieldModule,

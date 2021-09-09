@@ -15,6 +15,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 import {
   NbChatModule,
   NbDatepickerModule,
@@ -47,7 +48,8 @@ import {
     ThemeModule.forRoot(),
     MatDialogModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    FormsModule
   ],
   bootstrap: [AppComponent],
 })

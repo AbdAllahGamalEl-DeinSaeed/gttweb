@@ -22,12 +22,12 @@ interface TreeNode<T> {
 
 @Injectable()
 export class ProductListService {
-  productsList : Products_CompoundHierarchyDTO[];
   isProductAssignmentEditable: boolean;
   isProductAssignmentCalled: boolean;
   productsAssignment: ProductAssignment[];
   compoundMemberId: number;
   compoundMemberName: string;
+  productName: string;
   mainOptionProductId:number;
 
   constructor(private route: ActivatedRoute,
@@ -40,23 +40,23 @@ export class ProductListService {
 
   AssignProductList()
   {
-    this.httpServices.Get(compoundApiLinks.getProductsByCompoundMember ,{compoundMemberId: this.compoundMemberId}).subscribe((response: Products_CompoundHierarchyDTO[]) =>
+    this.httpServices.Get(compoundApiLinks.getProductsByCompoundMember ,{compoundMemberId: this.compoundMemberId}).subscribe((response: ProductAssignment[]) =>
     {
-      this.productsList = response;
+      this.productsAssignment = response;
+
     });
   }
 
   EditProductAssignments(){
     this.isProductAssignmentEditable = true;
-    this.compoundMemberName = null;
-    this.productsAssignment = [];
-    this.GetAllProducts();
-
+    this.productName = null;
   }
 
-  GetAllProducts()
+  SearchForProducts()
   {
-    this.httpServices.Get(compoundApiLinks.getAllProducts ,{compoundMemberId: this.compoundMemberId}).subscribe((response: ProductAssignment[]) =>
+    const assignedProducts = this.productsAssignment.filter(p => p.isAssigned == true);
+    console.log(assignedProducts);
+    this.httpServices.Post(compoundApiLinks.searchForProducts ,{productNameSearch: this.productName, compoundMemberId: this.compoundMemberId}, assignedProducts).subscribe((response: ProductAssignment[]) =>
     {
       console.log(response);
       this.productsAssignment = response;
@@ -67,14 +67,14 @@ export class ProductListService {
   {
     var index = this.productsAssignment.findIndex(p => p.productId == productId);
     this.productsAssignment[index].isAssigned = true;
-    console.log(this.mainOptionProductId)
+    console.log(productId)
   }
 
   RemoveProduct(productId)
   {
     var index = this.productsAssignment.findIndex(p => p.productId == productId);
     this.productsAssignment[index].isAssigned = false;
-    console.log(this.mainOptionProductId)
+    console.log(productId)
   }
 
   SaveProductAssignments(position, status)
@@ -91,8 +91,6 @@ export class ProductListService {
       this.productsAssignment = [];
       this.isProductAssignmentEditable = false;
       this.isProductAssignmentCalled = false;
-      this.productsList = [];
-
     })
 
   }
@@ -102,7 +100,6 @@ export class ProductListService {
     this.productsAssignment = [];
     this.isProductAssignmentEditable = false;
     this.isProductAssignmentCalled = false;
-    this.productsList = [];
 
   }
 }
@@ -413,6 +410,7 @@ export class CompoundListComponent implements OnInit {
   EditCompound()
   {
     this.isCompoundEditable = true;
+    this.GetCompoundCategoriesByPlatform(this.compoundDetails.platform.idPlatform);
 
   }
 
@@ -499,7 +497,10 @@ export class FsIconCompoundListComponent {
 
  GetProductList(){
   this.productListService.compoundMemberId = this.CategoryChildren.data.idCompoundMember;
+  this.productListService.compoundMemberName = this.CategoryChildren.data.name;
   this.productListService.isProductAssignmentCalled = true;
+  this.productListService.productsAssignment = [];
+  this.productListService.isProductAssignmentEditable = false;
   this.productListService.AssignProductList();
 }
 

@@ -8,6 +8,7 @@ import { ProductLookupsService } from './../../../@core/lookups/product-service'
 import { PlatformLookups } from './../../../@core/Models/lookups/PlatformLookups'
 import { ProductCategoryLookups, MfgCurrenyLookups, MarketGroupLookups, MfgLookups, DeviceTypeLookups, DeliveryLookups } from './../../../@core/Models/lookups/ProductLookups'
 import { ThrowStmt } from '@angular/compiler';
+import { MatDialog } from'@angular/material/dialog'
 
 @Component({
   templateUrl: './new-product-form.component.html',
@@ -30,7 +31,8 @@ export class NewProductFormComponent implements OnInit {
   constructor(private httpServices: HTTPService,
     private toastrService: NbToastrService,
     private productLookupsService : ProductLookupsService,
-    private platformLookupsService: PlatformLookupsService)
+    private platformLookupsService: PlatformLookupsService,
+    public dialog: MatDialog)
   {
     this.productDetails = new ProductDetailsDTO();
   }

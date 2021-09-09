@@ -62,7 +62,8 @@ export class ProductListComponent implements OnInit {
   EditProduct()
   {
     this.isProductEditable = true;
-    this.GetProductLookups();
+    this.GetProductCategories(this.productDetails.platform.idPlatform);
+    this.GetMarketGroups(this.productDetails.productMfgs[0].mfgCurrency);
     if(this.productDetails.productMfgs[0].priceOption == null)
     {
       this.productDetails.productMfgs[0].priceOption = new PriceOption;
@@ -102,6 +103,7 @@ export class ProductListComponent implements OnInit {
     await this.httpServices.Get(productApiLinks.getProduct , {productId: productId}).subscribe((response :ProductDetailsDTO)=>
     {
       this.productDetails = response;
+      console.log(this.productDetails)
     });
   }
 

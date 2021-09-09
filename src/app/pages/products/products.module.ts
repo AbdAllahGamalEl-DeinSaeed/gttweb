@@ -2,7 +2,7 @@ import { RouterModule } from '@angular/router';
 import { FsIconComponent } from './ProductCategoryList/ProductCategoryList.component';
 import { NgModule } from '@angular/core';
 import { ProductsRoutingModule , routedComponents} from './products-routing.module';
-import { NbCardModule, NbIconModule, NbInputModule, NbTreeGridModule,NbListModule,NbSelectModule,  NbCheckboxModule,NbButtonModule
+import { NbCardModule, NbIconModule, NbInputModule, NbTooltipModule, NbTreeGridModule,NbListModule,NbSelectModule,  NbCheckboxModule,NbButtonModule
 } from '@nebular/theme';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ThemeModule } from '../../@theme/theme.module';
@@ -17,6 +17,7 @@ import { ProductLookupsService } from './../../@core/lookups/product-service'
 @NgModule({
  imports: [
   NbCardModule,
+  NbTooltipModule,
   NbTreeGridModule,
   NbIconModule,
   NbInputModule,
