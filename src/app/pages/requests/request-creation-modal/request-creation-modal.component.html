@@ -1,0 +1,41 @@
+<nb-card>
+  <nb-card-header>
+    Please select at least 2 higher change agents to manage the request:
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-sm-3">
+        <label for="inputFirstName" class="label">Higher change agents names: </label>
+      </div>
+      <div class="col-sm-5">
+        <nb-select fullWidth [(selected)]="selectedHigherChangeAgent">
+          <nb-option *ngFor="let higherChangeAgentName of unassignedHigherChangeAgents" [value]="unassignedHigherChangeAgents">{{unassignedHigherChangeAgents}}</nb-option>
+        </nb-select>
+      </div>
+      <div class="col-sm-4">
+        <button nbButton status="success"(click)="AssignHigherChangeAgent()">Add</button>
+      </div>
+    </div>
+    <div style="overflow-y: scroll; max-height: 500px; min-height:500px;">
+      <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+              <th>Name</th>
+              <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let higherChangeAgentName of unassignedHigherChangeAgents" >
+              <td><input id = i type="text" nbInput fullwidth  [(ngModel)]="higherChangeAgentName"></td>
+              <td><button nbButton status="danger" class="button" (click)="RemoveHigherChangeAgent(higherChangeAgentName)">Remove</button></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer *ngIf="unassignedHigherChangeAgents.length >= 2">
+      <button nbButton status="primary" (click)="Confirm()">Confirm</button>
+      &nbsp;
+      <button  nbButton status="danger" (click)="Dismiss()">Cancel</button>
+  </nb-card-footer>
+</nb-card>
